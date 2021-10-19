@@ -57,6 +57,6 @@
 Ассистент [Правовая информация](https://мойассистент.рф/%D1%81%D0%BF%D1%80%D0%B0%D0%B2%D0%BE%D1%87%D0%BD%D1%8B%D0%B5_%D0%BC%D0%B0%D1%82%D0%B5%D1%80%D0%B8%D0%B0%D0%BB%D1%8B)
 
 ### Скачать готовый iso
-Скачать готовый iso образ вы можете:
-- по [magnet ссылке](magnet:?xt=urn:btih:1f4cb57a594c775b7b70945b88119e24f071e435&dn=archi-2021.10.18-x86%5F64.iso)
-- c яндекс диска
+Скачать готовый iso образ:
+- [торрент файл](https://github.com/ksandronline/archi/raw/main/archi-2021.10.18-x86_64.iso.torrent)
+- c [яндекс диска]()
