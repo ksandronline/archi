@@ -57,5 +57,5 @@
 Ассистент [Правовая информация](https://мойассистент.рф/%D1%81%D0%BF%D1%80%D0%B0%D0%B2%D0%BE%D1%87%D0%BD%D1%8B%D0%B5_%D0%BC%D0%B0%D1%82%D0%B5%D1%80%D0%B8%D0%B0%D0%BB%D1%8B)
 
 ### Скачать готовый образ archi-2021.10.18-x86_64.iso:
-- [торрент файл](https://archi.ksandr.online/files/archi-2021.10.18-x86_64.iso.torrent)
+- [торрент файл](http://archi.ksandr.online/files/archi-2021.10.18-x86_64.iso.torrent)
 - [яндекс диск](https://disk.yandex.ru/d/7l7xYjyK6KdoVQ)
