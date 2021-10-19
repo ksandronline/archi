@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<channel name="xfce4-panel" version="1.0">
+  <property name="configver" type="int" value="2"/>
+  <property name="panels" type="array">
+    <value type="int" value="1"/>
+    <property name="dark-mode" type="bool" value="true"/>
+    <property name="panel-1" type="empty">
+      <property name="position" type="string" value="p=11;x=1583;y=25"/>
+      <property name="size" type="uint" value="24"/>
+      <property name="position-locked" type="bool" value="true"/>
+      <property name="disable-struts" type="bool" value="false"/>
+      <property name="length-adjust" type="bool" value="false"/>
+      <property name="length" type="uint" value="100"/>
+      <property name="enter-opacity" type="uint" value="90"/>
+      <property name="leave-opacity" type="uint" value="40"/>
+      <property name="plugin-ids" type="array">
+        <value type="int" value="9"/>
+        <value type="int" value="13"/>
+        <value type="int" value="3"/>
+        <value type="int" value="1"/>
+        <value type="int" value="2"/>
+        <value type="int" value="12"/>
+        <value type="int" value="5"/>
+        <value type="int" value="6"/>
+        <value type="int" value="7"/>
+        <value type="int" value="10"/>
+      </property>
+      <property name="autohide-behavior" type="uint" value="0"/>
+    </property>
+  </property>
+  <property name="plugins" type="empty">
+    <property name="plugin-1" type="string" value="systray">
+      <property name="known-legacy-items" type="array">
+        <value type="string" value="аплет networkmanager"/>
+        <value type="string" value="osmo 0.4.4"/>
+        <value type="string" value="thunar"/>
+        <value type="string" value="hexchat"/>
+        <value type="string" value="sylpheed"/>
+        <value type="string" value="caja"/>
+        <value type="string" value="терминал xfce"/>
+        <value type="string" value="менеджер буфера обмена clipman"/>
+      </property>
+      <property name="known-items" type="array">
+        <value type="string" value="app-00007F16F8E318F0"/>
+        <value type="string" value="app-00007FD32C69B8F0"/>
+        <value type="string" value="Status Desktop"/>
+        <value type="string" value="KeePassXC"/>
+        <value type="string" value="yandex-disk-"/>
+      </property>
+    </property>
+    <property name="plugin-2" type="string" value="notification-plugin"/>
+    <property name="plugin-3" type="string" value="separator">
+      <property name="style" type="uint" value="0"/>
+      <property name="expand" type="bool" value="true"/>
+    </property>
+    <property name="plugin-5" type="string" value="xkb">
+      <property name="display-type" type="uint" value="2"/>
+      <property name="display-name" type="uint" value="1"/>
+    </property>
+    <property name="plugin-6" type="string" value="clock"/>
+    <property name="plugin-7" type="string" value="actions"/>
+    <property name="plugin-9" type="string" value="separator">
+      <property name="style" type="uint" value="0"/>
+    </property>
+    <property name="plugin-10" type="string" value="separator">
+      <property name="style" type="uint" value="0"/>
+    </property>
+    <property name="plugin-12" type="string" value="pulseaudio">
+      <property name="enable-keyboard-shortcuts" type="bool" value="true"/>
+      <property name="mpris-players" type="string" value="chromium.instance119629;chromium.instance12302;chromium.instance16369;chromium.instance24346;chromium.instance41574;chromium.instance76114;firefox.instance1016;firefox.instance1159;firefox.instance13733;firefox.instance1381;firefox.instance13897;firefox.instance1542;firefox.instance21137;firefox.instance3984;firefox.instance44065;firefox.instance47074;firefox.instance4728;firefox.instance76276;firefox.instance7709;firefox.instance77362;firefox.instance7743;firefox.instance972"/>
+    </property>
+    <property name="plugin-13" type="string" value="applicationsmenu">
+      <property name="button-icon" type="string" value="archlinux-logo"/>
+      <property name="button-title" type="string" value="Arch "/>
+    </property>
+  </property>
+</channel>

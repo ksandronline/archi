@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC
+ "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
+<policyconfig>
+
+ <vendor>archi</vendor>
+ <vendor_url>http://archi.ksandr.online/</vendor_url>
+ <icon_name>archlinux-logo</icon_name>
+
+ <action id="online.ksandr.archi">
+ 
+ <description>Run install Arch linux on this PC</description>
+ <description xml:lang="ru">Запустить установку Arch линукс на этот компьютер</description>
+ <message>Authentication is required to run installation.</message>
+ <message xml:lang="ru">Требуется аутентификация для запуска установки.</message>
+ <defaults>
+ <allow_any>no</allow_any>
+ <allow_inactive>auth_admin</allow_inactive>
+ <allow_active>auth_admin</allow_active>
+ </defaults>
+ <annotate key="org.freedesktop.policykit.exec.path">/usr/bin/python</annotate>
+ <annotate key="org.freedesktop.policykit.exec.allow_gui">true</annotate>
+ </action>
+
+</policyconfig>

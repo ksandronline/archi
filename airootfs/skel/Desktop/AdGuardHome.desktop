@@ -1,0 +1,7 @@
+[Desktop Entry]
+Version=1.0
+Type=Link
+Name=Настройки AdGuardHome 
+Comment=
+Icon=/usr/share/icons/adguard.png
+URL=http://localhost/login.html

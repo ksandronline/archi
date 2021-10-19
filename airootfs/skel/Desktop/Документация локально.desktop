@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Документация локально
+Comment=
+Exec=firefox file:///usr/share/doc/arch-wiki/html/ru/
+Icon=firefox
+Path=/usr/share/doc/arch-wiki/html/ru/
+Terminal=false
+StartupNotify=false

@@ -1,0 +1,106 @@
+<?xml version="1.0" ?>
+<!DOCTYPE Menu
+  PUBLIC '-//freedesktop//DTD Menu 1.0//EN'
+  'http://standards.freedesktop.org/menu-spec/menu-1.0.dtd'>
+<Menu>
+	<Name>Xfce</Name>
+	<MergeFile type="parent">/etc/xdg/menus/xfce-applications.menu</MergeFile>
+	<Menu>
+		<Name>Development</Name>
+		<Exclude>
+			<Filename>fluid.desktop</Filename>
+		</Exclude>
+		<AppDir>/root/.local/share/applications</AppDir>
+		<DirectoryDir>/root/.local/share/desktop-directories</DirectoryDir>
+	</Menu>
+	<Menu>
+		<Name>Multimedia</Name>
+		<Exclude>
+			<Filename>qv4l2.desktop</Filename>
+		</Exclude>
+		<AppDir>/root/.local/share/applications</AppDir>
+		<Exclude>
+			<Filename>qvidcap.desktop</Filename>
+		</Exclude>
+	</Menu>
+	<Menu>
+		<Name>Network</Name>
+		<Exclude>
+			<Filename>lftp.desktop</Filename>
+		</Exclude>
+		<AppDir>/root/.local/share/applications</AppDir>
+		<Layout>
+			<Merge type="menus"/>
+			<Filename>chromium.desktop</Filename>
+			<Filename>firefox.desktop</Filename>
+			<Filename>lftp.desktop</Filename>
+			<Filename>vncviewer.desktop</Filename>
+			<Filename>xfce4-web-browser.desktop</Filename>
+			<Filename>bssh.desktop</Filename>
+			<Filename>bvnc.desktop</Filename>
+			<Filename>xfce4-mail-reader.desktop</Filename>
+			<Filename>org.kde.kdeconnect.app.desktop</Filename>
+			<Filename>org.kde.kdeconnect.sms.desktop</Filename>
+			<Filename>org.kde.kdeconnect.nonplasma.desktop</Filename>
+			<Merge type="files"/>
+		</Layout>
+	</Menu>
+	<Exclude>
+		<Filename>xfce4-mail-reader.desktop</Filename>
+	</Exclude>
+	<AppDir>/root/.local/share/applications</AppDir>
+	<Menu>
+		<Name>Accessories</Name>
+		<Exclude>
+			<Filename>stoken-gui.desktop</Filename>
+		</Exclude>
+		<AppDir>/root/.local/share/applications</AppDir>
+		<Exclude>
+			<Filename>stoken-gui-small.desktop</Filename>
+		</Exclude>
+		<Layout>
+			<Merge type="menus"/>
+			<Filename>org.keepassxc.KeePassXC.desktop</Filename>
+			<Filename>org.xfce.mousepad.desktop</Filename>
+			<Filename>plank.desktop</Filename>
+			<Filename>stoken-gui.desktop</Filename>
+			<Filename>stoken-gui-small.desktop</Filename>
+			<Filename>tilda.desktop</Filename>
+			<Filename>vim.desktop</Filename>
+			<Filename>alacarte.desktop</Filename>
+			<Filename>xfce4-taskmanager.desktop</Filename>
+			<Filename>xfce4-run.desktop</Filename>
+			<Filename>org.gnome.FileRoller.desktop</Filename>
+			<Filename>xfce4-clipman.desktop</Filename>
+			<Filename>xfce4-about.desktop</Filename>
+			<Filename>xfce4-appfinder.desktop</Filename>
+			<Filename>xfce4-screenshooter.desktop</Filename>
+			<Filename>xfce4-file-manager.desktop</Filename>
+			<Filename>thunar-bulk-rename.desktop</Filename>
+			<Filename>thunar.desktop</Filename>
+			<Filename>xfce4-terminal-emulator.desktop</Filename>
+			<Merge type="files"/>
+		</Layout>
+	</Menu>
+	<Menu>
+		<Name>System</Name>
+		<Exclude>
+			<Filename>lstopo.desktop</Filename>
+		</Exclude>
+		<AppDir>/home/archi/.local/share/applications</AppDir>
+		<Layout>
+			<Merge type="menus"/>
+			<Filename>lstopo.desktop</Filename>
+			<Filename>htop.desktop</Filename>
+			<Filename>tilda.desktop</Filename>
+			<Filename>xfce4-session-logout.desktop</Filename>
+			<Filename>xfce4-taskmanager.desktop</Filename>
+			<Filename>avahi-discover.desktop</Filename>
+			<Filename>gparted.desktop</Filename>
+			<Filename>xfce4-terminal.desktop</Filename>
+			<Filename>thunar-bulk-rename.desktop</Filename>
+			<Filename>thunar.desktop</Filename>
+			<Merge type="files"/>
+		</Layout>
+	</Menu>
+</Menu>
