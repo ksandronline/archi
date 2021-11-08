@@ -1,0 +1,5 @@
+[Default Applications]
+audio/x-mpegurl=audacious.desktop
+
+[Added Associations]
+audio/x-mpegurl=audacious.desktop;

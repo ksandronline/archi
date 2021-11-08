@@ -1,0 +1,20 @@
+#EXTM3U
+#PLAYLIST:Радио
+
+#EXTINF:0,Питер FM 100.9
+https://piterfm-hls.cdnvideo.ru/piterfm-live/piterfm.stream/playlist.m3u8
+
+#EXTINF:0,Релакс
+https://zaycevfm.cdnvideo.ru/ZaycevFM_relax_256.mp3
+
+#EXTINF:0,Максимум (поток 128)
+https://maximum.hostingradio.ru/maximum128.mp3
+
+#EXTINF:0,Наше Радио (поток 1)
+http://nashe5.hostingradio.ru/nashe-128.mp3
+
+#EXTINF:0,Наше Радио (поток 2)
+http://nashe2.hostingradio.ru/nashe-128.mp3
+
+#EXTINF:0,Радио ULTRA
+https://nashe1.hostingradio.ru:18000/ultra-128.mp3

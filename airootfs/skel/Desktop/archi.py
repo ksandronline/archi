@@ -5,7 +5,7 @@ DESCRIPTION = "archi - скриптовая программа установк�
 CONTACT     = "ru@ksandr.online"
 AUTOR       = "ksandr"
 STATUS      = "pre.alfa"
-VERSION     = 20211018
+VERSION     = 20211108
 BUILD       = 1
 HOME_URL    = "http://archi.ksandr.online"
 
@@ -39,7 +39,7 @@ linux_zen   = ["linux-zen", "linux-zen-headers"]
 xorg        = ["xorg-server", "lightdm", "lightdm-gtk-greeter", "xf86-video-amdgpu", "xf86-video-ati", "xf86-video-intel", "xf86-video-nouveau", "tigervnc"]
 xfce4       = ["xfce4", "xfce4-clipman-plugin", "xfce4-pulseaudio-plugin", "xfce4-xkb-plugin", "xfce4-screenshooter", "xfce4-taskmanager", \
     "ristretto", "caja", "arc-icon-theme", "arc-gtk-theme", "xdg-utils", "gvfs", "nfs-utils", "ntfs-3g", "sshfs", "unrar", "unzip", \
-    "file-roller", "accountsservice", "tilda"]
+    "file-roller", "accountsservice", "tilda", "gnome-disk-utility"]
 utils       = ["openssh", "avahi", "nss-mdns", "python-dbus", "sudo", "wget", "git", "mc", "cups", "samba", "zsh", "zsh-completions", "grc", "mpg123", "keepassxc", "mpv", \
     "perl-locale-gettext", "pulseaudio", "pulseaudio-zeroconf", "pavucontrol"]
 utils_aur   = ["archlinux-appstream-data-pamac", "pamac-zsh-completions", "yandex-disk-indicator", "man-pages-ru"]
@@ -315,6 +315,12 @@ def prepare_disk():
                 run(parted + ["set", "1", "boot", "on"])
                 run(parted + ["mkpart", "primary", "linux-swap", "512MiB", mem_str+"GiB"])  # TODO Добавить к swap "512MiB"
                 run(parted + ["mkpart", "primary", "btrfs", mem_str+"GiB", "100%"])
+
+                mkfs_command = ["mkfs.fat", "-F", "32"]
+                uefi_partition = ["/dev/"+use_disk.get()+"1"]
+                run(mkfs_command + uefi_partition)
+                uefi_mount = ["mount", "/dev/"+use_disk.get()+"1", root_mount_path+"/boot/efi"]
+                run(uefi_mount)
 
                 run(["mkswap", "/dev/"+use_disk.get()+"2"])
                 mkfs_command = ["mkfs.btrfs", "-f"]

@@ -12,6 +12,7 @@
 		</Exclude>
 		<AppDir>/root/.local/share/applications</AppDir>
 		<DirectoryDir>/root/.local/share/desktop-directories</DirectoryDir>
+		<DirectoryDir>/home/archi/.local/share/desktop-directories</DirectoryDir>
 	</Menu>
 	<Menu>
 		<Name>Multimedia</Name>
@@ -33,12 +34,18 @@
 			<Merge type="menus"/>
 			<Filename>chromium.desktop</Filename>
 			<Filename>firefox.desktop</Filename>
+			<Filename>yandex-browser-beta.desktop</Filename>
+			<Filename>badwolf.desktop</Filename>
 			<Filename>lftp.desktop</Filename>
 			<Filename>vncviewer.desktop</Filename>
 			<Filename>xfce4-web-browser.desktop</Filename>
+			<Filename>xfce4-mail-reader.desktop</Filename>
+			<Filename>deluge.desktop</Filename>
+			<Filename>discord.desktop</Filename>
+			<Filename>io.github.Hexchat.desktop</Filename>
+			<Filename>remote-assistant.desktop</Filename>
 			<Filename>bssh.desktop</Filename>
 			<Filename>bvnc.desktop</Filename>
-			<Filename>xfce4-mail-reader.desktop</Filename>
 			<Filename>org.kde.kdeconnect.app.desktop</Filename>
 			<Filename>org.kde.kdeconnect.sms.desktop</Filename>
 			<Filename>org.kde.kdeconnect.nonplasma.desktop</Filename>

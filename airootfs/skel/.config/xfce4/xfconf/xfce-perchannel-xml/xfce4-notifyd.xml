@@ -4,7 +4,6 @@
   <property name="applications" type="empty">
     <property name="known_applications" type="array">
       <value type="string" value="FileZilla"/>
-      <value type="string" value="NitroShare"/>
       <value type="string" value="org.kde.kdeconnect.daemon"/>
       <value type="string" value="org.manjaro.pamac.manager"/>
       <value type="string" value="thunar"/>
@@ -18,7 +17,7 @@
     </property>
   </property>
   <property name="primary-monitor" type="uint" value="0"/>
-  <property name="notify-location" type="uint" value="3"/>
+  <property name="notify-location" type="uint" value="2"/>
   <property name="log-level" type="uint" value="0"/>
   <property name="log-level-apps" type="uint" value="0"/>
   <property name="theme" type="string" value="Bright"/>

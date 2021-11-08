@@ -117,21 +117,22 @@ xfsprogs
 xl2tpd
 zsh
 
-
+# Пакеты необходимые для установщика
 python
 tk
 
-
+# Менеджер сети
 networkmanager
 network-manager-applet
 
-
+# avahi
 avahi
 nss-mdns
 python-dbus
 python-gobject
+gtk3
 
-
+# Xorg
 xorg-server
 lightdm
 lightdm-gtk-greeter
@@ -141,7 +142,7 @@ xf86-video-intel
 xf86-video-nouveau
 tigervnc
 
-
+# Графическая среда
 xfce4
 xfce4-clipman-plugin
 xfce4-pulseaudio-plugin
@@ -150,7 +151,7 @@ xfce4-screenshooter
 xfce4-taskmanager
 mousepad
 ristretto
-evince
+xreader
 arc-icon-theme
 arc-gtk-theme
 xdg-utils
@@ -165,36 +166,60 @@ accountsservice
 tilda
 plank
 polkit
+gnome-disk-utility
 
+# Полезные утилиты
 pulseaudio
 pulseaudio-zeroconf
 pavucontrol
+audacious
 zsh-completions
 grc
 mpg123
 mpv
 perl-locale-gettext
-gtk2
 keepassxc
 git
 kdeconnect
-alacarte
+alacarte		# Пакет для редактирования меню - в релизе не нужен.
 htop
 base-devel
 wget
-
-
-#badwolf
-#adguardhome
-#assistant
-firefox
-chromium
-gparted
+lsof
 arch-wiki-docs
+gparted
+firefox
+firefox-i18n-ru
+chromium
+discord
+hexchat
+deluge
+deluge-gtk
 
 
+# Шрифты
 ttf-droid
 ttf-croscore
 ttf-liberation
 ttf-dejavu
 ttf-inconsolata
+
+
+# Пакеты из дополнительного репизитория. Для их включения в iso включите репозиторий [archi] в файле pacman.conf из этой директории.
+#badwolf
+#adguardhome-bin
+#assistant
+#sublime-text-4
+#rpi-imager
+#---ungoogled-chromium		# В процессе
+#---yandex-browser-beta		# В процессе
+
+# --- Экспериментальные пакеты. ---
+# wine
+#wine
+#wine-mono
+#wine-gecko
+
+# kodi
+#kodi
+#kodi-platform
