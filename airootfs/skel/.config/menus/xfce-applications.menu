@@ -10,16 +10,14 @@
 		<Exclude>
 			<Filename>fluid.desktop</Filename>
 		</Exclude>
-		<AppDir>/root/.local/share/applications</AppDir>
-		<DirectoryDir>/root/.local/share/desktop-directories</DirectoryDir>
-		<DirectoryDir>/home/archi/.local/share/desktop-directories</DirectoryDir>
+		<AppDir>/home/archi/.local/share/applications</AppDir>
 	</Menu>
 	<Menu>
 		<Name>Multimedia</Name>
 		<Exclude>
 			<Filename>qv4l2.desktop</Filename>
 		</Exclude>
-		<AppDir>/root/.local/share/applications</AppDir>
+		<AppDir>/home/archi/.local/share/applications</AppDir>
 		<Exclude>
 			<Filename>qvidcap.desktop</Filename>
 		</Exclude>
@@ -29,7 +27,7 @@
 		<Exclude>
 			<Filename>lftp.desktop</Filename>
 		</Exclude>
-		<AppDir>/root/.local/share/applications</AppDir>
+		<AppDir>/home/archi/.local/share/applications</AppDir>
 		<Layout>
 			<Merge type="menus"/>
 			<Filename>chromium.desktop</Filename>
@@ -55,13 +53,13 @@
 	<Exclude>
 		<Filename>xfce4-mail-reader.desktop</Filename>
 	</Exclude>
-	<AppDir>/root/.local/share/applications</AppDir>
+	<AppDir>/home/archi/.local/share/applications</AppDir>
 	<Menu>
 		<Name>Accessories</Name>
 		<Exclude>
 			<Filename>stoken-gui.desktop</Filename>
 		</Exclude>
-		<AppDir>/root/.local/share/applications</AppDir>
+		<AppDir>/home/archi/.local/share/applications</AppDir>
 		<Exclude>
 			<Filename>stoken-gui-small.desktop</Filename>
 		</Exclude>

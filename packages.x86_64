@@ -117,6 +117,7 @@ xfsprogs
 xl2tpd
 zsh
 
+# --- Дополнительные пакеты ---
 # Пакеты необходимые для установщика
 python
 tk
@@ -181,7 +182,7 @@ perl-locale-gettext
 keepassxc
 git
 kdeconnect
-alacarte		# Пакет для редактирования меню - в релизе не нужен.
+alacarte
 htop
 base-devel
 wget
@@ -205,21 +206,23 @@ ttf-dejavu
 ttf-inconsolata
 
 
-# Пакеты из дополнительного репизитория. Для их включения в iso включите репозиторий [archi] в файле pacman.conf из этой директории.
-#badwolf
-#adguardhome-bin
-#assistant
-#sublime-text-4
-#rpi-imager
-#---ungoogled-chromium		# В процессе
-#---yandex-browser-beta		# В процессе
-
-# --- Экспериментальные пакеты. ---
 # wine
-#wine
-#wine-mono
-#wine-gecko
+wine
+wine-mono
+wine-gecko
+
 
 # kodi
-#kodi
-#kodi-platform
+kodi
+kodi-platform
+
+
+# Пакеты из дополнительного репизитория. Для их включения в iso включите репозиторий [archi] в файле pacman.conf из этой директории.
+oh-my-zsh-git
+badwolf
+adguardhome-bin
+assistant
+sublime-text-4
+rpi-imager
+#---ungoogled-chromium		# В процессе
+#---yandex-browser-beta		# В процессе

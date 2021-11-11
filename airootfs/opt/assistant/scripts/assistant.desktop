@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=Ассистент
-Comment=Ассистент
-Keywords=assistant;фыышыефте;Ассистент;fccbcntyn
-Exec=/opt/assistant/scripts/assistant.sh
-Terminal=false
-Type=Application
-Icon=/opt/assistant/share/icons/assistant.png
-Categories=Network;
