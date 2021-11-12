@@ -34,7 +34,13 @@
 
 Файл iso-образа будет находиться в "/home/ksandr/work"
 
-
-
 ### Скачать готовый образ archi-202X.XX.XX-x86_64.iso:
 [Страница загрузки](http://archi.ksandr.online/downloads/)
+
+#### Особые дополнения включенные в образ
+
+[AdGuard Home](https://github.com/AdguardTeam/AdguardKnowledgeBase/blob/master/10.home/01.overview/docs.ru.md) описание на странице разработчика.
+
+[Ассистент](https://мойассистент.рф/%D0%BE_%D0%BF%D1%80%D0%BE%D0%B4%D1%83%D0%BA%D1%82%D0%B5) описание на странице разработчика.
+
+[archi.py](https://github.com/ksandronline/archi/wiki/archi) python-скрипт для установки Arch linux с графическим интерфейсом.
