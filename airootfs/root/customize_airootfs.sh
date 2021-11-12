@@ -49,7 +49,7 @@ mkdir /home/archi
 cp -aT /skel/ /home/archi/
 
 ln -sf /home/archi/Downloads /home/archi/Загрузки
-ln -sf /usr/share/doc/arch-wiki/html/ru /home/archi/Desktop/Оффициальное WiKi локальная версия
+ln -sf /usr/share/doc/arch-wiki/html/ru "/home/archi/Desktop/Оффициальное WiKi локальная версия"
 
 echo "[Desktop Entry]
 Version=1.0
