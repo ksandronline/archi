@@ -5,7 +5,7 @@ DESCRIPTION = "archi - скриптовая программа установк�
 CONTACT     = "ru@ksandr.online"
 AUTOR       = "ksandr"
 STATUS      = "pre.alfa"
-VERSION     = 20211108
+VERSION     = 20211112
 BUILD       = 1
 HOME_URL    = "http://archi.ksandr.online"
 
@@ -52,7 +52,7 @@ chroot              = ["arch-chroot", root_mount_path]
 fs_type             = "mkfs.btrfs"
 domain              = "local"
 
-log_install = '/home/ksandr/Doc/py/install.log'
+log_install = 'install.log'
 
 # Installation_guide.html
 gparted_guide_online    = "https://gparted.org/display-doc.php?name=help-manual&lang=ru"
@@ -105,12 +105,12 @@ lightdm_gtk_greeter_conf = """
 theme-name = Adwaita-dark
 icon-theme-name = Breeze_Obsidian
 background = /usr/share/backgrounds/xfce/xfce-blue.jpg
-position = 19%,center 49%,center
+position = 20%,center 50%,center
 xft-antialias = true
 xft-dpi = 96
 xft-rgba = vrgb
 xft-hintstyle = hintmedium
-indicators = ~separator;~host;~spacer;~clock;~spacer;~power"""
+indicators = ~separator;~host;~spacer;~clock;~spacer;~session;~layout;~power;~separator"""
 
 xvnc_service = """
 [Unit]

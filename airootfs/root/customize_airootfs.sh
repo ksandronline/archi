@@ -49,13 +49,14 @@ mkdir /home/archi
 cp -aT /skel/ /home/archi/
 
 ln -sf /home/archi/Downloads /home/archi/Загрузки
+ln -sf /usr/share/doc/arch-wiki/html/ru /home/archi/Desktop/Оффициальное WiKi локальная версия
 
 echo "[Desktop Entry]
 Version=1.0
 Type=Application
 Name=Установка Arch Linux
 Comment=Установка Arch Linux на этот компьютер.
-Exec=/usr/bin/pkexec python /home/archi/Desktop/archi.py
+Exec=sudo python /home/archi/Desktop/archi.py
 Icon=archlinux-logo
 Path=
 Terminal=false
