@@ -2,8 +2,8 @@
 4.10.3+=true
 
 [/home/archi/Desktop/doc.desktop]
-row=0
-col=3
+row=1
+col=2
 
 [/home/archi/Desktop/radio.m3u]
 row=0
@@ -11,33 +11,25 @@ col=17
 
 [/home/archi/Desktop/AdGuardHome.desktop]
 row=0
-col=1
+col=2
 
 [/home/archi/Desktop/archi.py]
 row=2
 col=2
 
-[/home/archi/Desktop/assistant.desktop]
-row=0
-col=2
+[/home/archi/Desktop/Оффициальное WiKi локальная версия]
+row=1
+col=3
 
 [/home/archi/Desktop/install.desktop]
 row=2
 col=3
 
-[/home/archi/Desktop/help]
+[/home/archi/Desktop/assistant.desktop]
 row=0
-col=4
-
-[497515d9-88fa-474e-94cc-ad2fb2d453bf]
-row=1
-col=0
-
-[0f2ac6d4-b042-4b06-bf00-011ae906e9d1]
-row=0
-col=0
+col=3
 
 [/home/archi]
-row=2
+row=0
 col=0
 

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # DESCRIPTION = _("archi - script for install archlinux.")
-DESCRIPTION = "archi - скриптовая программа установки archlinux."
+DESCRIPTION = "archi.py - скриптовая программа установки archlinux."
 CONTACT     = "ru@ksandr.online"
 AUTOR       = "ksandr"
 STATUS      = "pre.alfa"
@@ -31,16 +31,16 @@ user_pass   = "archi"
 root_pass   = "archi" # !!! !НЕ! ЗАБУДЬ ПОМЕНЯТЬ ПАРОЛЬ !!!
 
 # Списки пакетов
-base_sys    = ["base", "base-devel", "btrfs-progs", "vim"]
+base_sys    = ["base", "base-devel", "btrfs-progs", "vim", "wget"]
 kernel      = ["linux-firmware", "intel-ucode", "amd-ucode", "grub", "os-prober"]
 linux_std   = ["linux", "linux-headers"]
 linux_lts   = ["linux-lts", "linux-lts-headers"]    
 linux_zen   = ["linux-zen", "linux-zen-headers"]
 xorg        = ["xorg-server", "lightdm", "lightdm-gtk-greeter", "xf86-video-amdgpu", "xf86-video-ati", "xf86-video-intel", "xf86-video-nouveau", "tigervnc"]
 xfce4       = ["xfce4", "xfce4-clipman-plugin", "xfce4-pulseaudio-plugin", "xfce4-xkb-plugin", "xfce4-screenshooter", "xfce4-taskmanager", \
-    "ristretto", "caja", "arc-icon-theme", "arc-gtk-theme", "xdg-utils", "gvfs", "nfs-utils", "ntfs-3g", "sshfs", "unrar", "unzip", \
+    "ristretto", "arc-icon-theme", "arc-gtk-theme", "xdg-utils", "gvfs", "nfs-utils", "ntfs-3g", "sshfs", "unrar", "unzip", \
     "file-roller", "accountsservice", "tilda", "gnome-disk-utility"]
-utils       = ["openssh", "avahi", "nss-mdns", "python-dbus", "sudo", "wget", "git", "mc", "cups", "samba", "zsh", "zsh-completions", "grc", "mpg123", "keepassxc", "mpv", \
+utils       = ["openssh", "avahi", "nss-mdns", "python-dbus", "sudo", "git", "mc", "cups", "samba", "zsh", "zsh-completions", "grc", "mpg123", "keepassxc", "mpv", \
     "perl-locale-gettext", "pulseaudio", "pulseaudio-zeroconf", "pavucontrol"]
 utils_aur   = ["archlinux-appstream-data-pamac", "pamac-zsh-completions", "yandex-disk-indicator", "man-pages-ru"]
 fonts       = ["ttf-paratype", "otf-russkopis", "ttf-croscore", "ttf-dejavu", "ttf-ubuntu-font-family", "ttf-inconsolata", "ttf-liberation", "ttf-droid"]
@@ -52,7 +52,10 @@ chroot              = ["arch-chroot", root_mount_path]
 fs_type             = "mkfs.btrfs"
 domain              = "local"
 
-log_install = 'install.log'
+log_install = '/home/archi/Desktop/install.log'
+createlog = open(log_install, 'w')		# Создаём лог-файл
+createlog.write("Готов.")
+createlog.close()
 
 # Installation_guide.html
 gparted_guide_online    = "https://gparted.org/display-doc.php?name=help-manual&lang=ru"
@@ -61,7 +64,7 @@ install_guide_local     = "/usr/share/doc/arch-wiki/html/ru/Installation_guide.h
 doc_local               = "/usr/share/doc/arch-wiki/html/ru/"
 
 pacstrap = ["pacstrap"]
-pacman = ["pacman", "-S", "--noconfirm"]
+pacman = ["pacman", "-S", "--noconfirm", "--config", "/root/pacman.conf"]   # Конфиг копируеться с iso в конце функции basic_configure()
 pamac = ["pamac", "install", "--no-confirm"]
 
 color1 = '#f6f9fc'  # Archlinux.org
@@ -210,81 +213,81 @@ for dev in os.listdir("/sys/class/net/"):   # Спасибо https://stackoverfl
 
 def install_arch():
     prepare_disk()                                  # Подготовка диска
-    run(pacstrap + [root_mount_path] + base_sys)    # Установка базовой системы
+    _run(pacstrap + [root_mount_path] + base_sys)    # Установка базовой системы
     basic_configure()                               # Конфигурирование базовой системы
 
     args = ["useradd", "--create-home", "--shell", "/bin/zsh", "--password", cryptPassword(user_pass,"md5"), add_user]    # Добавляем пользователя
-    run(chroot + args)
+    _run(chroot + args)
     args = ["usermod", "--password", cryptPassword(root_pass,"md5"), "root"]    # Меняем пароль для Root`а
-    run(chroot + args)
+    _run(chroot + args)
     fr_st_base_sys.configure(background=color3) # Первый пункт выполнен
     
     # Ядро
     if kernel_var.get() == 1:   linux = linux_std
     elif kernel_var.get() == 2: linux = linux_lts
     elif kernel_var.get() == 3: linux = linux_zen
-    run(chroot + pacman + kernel + linux)  # Установка ядра и загрузчика
+    _run(chroot + pacman + kernel + linux)  # Установка ядра и загрузчика
 
     # Загрузчик
     grub_mkconfig = ["grub-mkconfig", "-o", "/boot/grub/grub.cfg"] 
     if grub_var.get() == 1:
-        run(chroot + grub_mkconfig)
-        run(chroot + ["grub-install", "/dev/"+use_disk.get()])  # BIOS
+        _run(chroot + grub_mkconfig)
+        _run(chroot + ["grub-install", "/dev/"+use_disk.get()])  # BIOS
     elif grub_var.get() == 2:
-        run(chroot + grub_mkconfig)
-        run(chroot + ["grub-install"])  # UEFI
+        _run(chroot + grub_mkconfig)
+        _run(chroot + ["grub-install"])  # UEFI
     elif grub_var.get() == 3:
         line = "Загрузчик не установлен.\n"
         txt_edit.insert(tk.END, line)
     fr_st_kernel.configure(background=color3)   # Второй пункт выполен
 
     # Установка дополнений:
-    run(chroot + pacman + xorg)
+    _run(chroot + pacman + xorg)
 
-    write([lightdm_conf],               root_mount_path + "/etc/lightdm/lightdm.conf")
-    write([lightdm_gtk_greeter_conf],   root_mount_path + "/etc/lightdm/lightdm-gtk-greeter.conf")
+    _write([lightdm_conf],               root_mount_path + "/etc/lightdm/lightdm.conf")
+    _write([lightdm_gtk_greeter_conf],   root_mount_path + "/etc/lightdm/lightdm-gtk-greeter.conf")
 
-    write([xvnc_service],   root_mount_path + "/etc/systemd/system/xvnc@.service")
-    write([xvnc_socket],    root_mount_path + "/etc/systemd/system/xvnc.socket")
+    _write([xvnc_service],   root_mount_path + "/etc/systemd/system/xvnc@.service")
+    _write([xvnc_socket],    root_mount_path + "/etc/systemd/system/xvnc.socket")
 
-    run(chroot + ["systemctl", "enable", "lightdm.service"])
+    _run(chroot + ["systemctl", "enable", "lightdm.service"])
     fr_st_xorg.configure(background=color3)     # Третий пункт
 
-    run(chroot + pacman + xfce4)
+    _run(chroot + pacman + xfce4)
     fr_st_xfce4.configure(background=color3)
 
-    run(chroot + pacman + utils)
+    _run(chroot + pacman + utils)
     usermod = ["usermod", "--shell", "/bin/zsh", "root"]    # Меняем шелл для Root`а
-    run(chroot + usermod)
-    write([add_user, "ALL=(ALL)", "ALL"], root_mount_path + "/etc/sudoers")  # Разрешаем юзеру sudo
+    _run(chroot + usermod)
+    _write([add_user, "ALL=(ALL)", "ALL"], root_mount_path + "/etc/sudoers")  # Разрешаем юзеру sudo
 
-    write([nsswitch_conf], root_mount_path + "/etc/nsswitch.conf")      # Настраиваем Avahi
-    write([avahi_vnc_service], root_mount_path + "/etc/avahi/services/vnc.service")
-    write([avahi_ssh_service], root_mount_path + "/etc/avahi/services/ssh.service")
-    run(chroot + ["systemctl", "enable", "avahi-daemon.service"])
-    run(chroot + ["systemctl", "enable", "xvnc.socket"])
+    _write([nsswitch_conf], root_mount_path + "/etc/nsswitch.conf")      # Настраиваем Avahi
+    _write([avahi_vnc_service], root_mount_path + "/etc/avahi/services/vnc.service")
+    _write([avahi_ssh_service], root_mount_path + "/etc/avahi/services/ssh.service")
+    _run(chroot + ["systemctl", "enable", "avahi-daemon.service"])
+    _run(chroot + ["systemctl", "enable", "xvnc.socket"])
 
-    run(chroot + ["systemctl", "enable", "sshd.service"])       # Запускаем SSH сервер
+    _run(chroot + ["systemctl", "enable", "sshd.service"])       # Запускаем SSH сервер
 
-    write_end([default_pa], root_mount_path + "/etc/pulse/default.pa")      # Настраиваем звук по сети.
+    _write_end([default_pa], root_mount_path + "/etc/pulse/default.pa")      # Настраиваем звук по сети.
     fr_st_utils.configure(background=color3)
 
     install_pamac()
     fr_st_pamac.configure(background=color3)
 
-    run(chroot + pamac + utils_aur)
+    _run(chroot + pamac + utils_aur)
     fr_st_utils_aur.configure(background=color3)
 
-    run(chroot + pamac + fonts)
+    _run(chroot + pamac + fonts)
     fr_st_fonts.configure(background=color3)
 
-    run(chroot + pamac + brows)
+    _run(chroot + pamac + brows)
     fr_st_brows.configure(background=color3)
 
-    run(chroot + pamac + custom)
+    _run(chroot + pamac + custom)
     fr_st_custom.configure(background=color3)
-    show("Установка Arch linux завершена.")
-    show("Лог-файл установки: "+ log_install)
+    _show("Установка Arch linux завершена.")
+    _show("Лог-файл установки: "+ log_install)
 
 def prepare_disk():
     # Если BIOS: отступаем 1 Мб от начала диска, создаём swap = ОЗУ, на всём оставшемся создаём раздел для корневой системы.
@@ -296,99 +299,99 @@ def prepare_disk():
             mem_gib = mem_bytes/(1024.**3)
             mem_str = str(round(mem_gib))
             if grub_var.get() == 1:         # BIOS
-                run(parted + ["mklabel", "msdos"])
-                run(parted + ["mkpart", "primary", "linux-swap", "1MiB", mem_str+"GiB"])
-                run(parted + ["mkpart", "primary", "btrfs", mem_str+"GiB", "100%"])
+                _run(parted + ["mklabel", "msdos"])
+                _run(parted + ["mkpart", "primary", "linux-swap", "1MiB", mem_str+"GiB"])
+                _run(parted + ["mkpart", "primary", "btrfs", mem_str+"GiB", "100%"])
 
-                run(["mkswap", "/dev/"+use_disk.get()+"1"])
+                _run(["mkswap", "/dev/"+use_disk.get()+"1"])
                 mkfs_command = ["mkfs.btrfs", "-f"]
                 root_partition = ["/dev/"+use_disk.get()+"2"]
-                run(mkfs_command + root_partition)
+                _run(mkfs_command + root_partition)
 
-                run(["swapon", "/dev/"+use_disk.get()+"1"])
-                run(["mount", "/dev/"+use_disk.get()+"2", root_mount_path])
+                _run(["swapon", "/dev/"+use_disk.get()+"1"])
+                _run(["mount", "/dev/"+use_disk.get()+"2", root_mount_path])
             elif grub_var.get() == 2:       # UEFI
-                run(parted + ["mklabel", "gpt"])
-                run(parted + ["mkpart", "primary", "fat32", "1MiB", "512MiB"])
-                run(parted + ["name", "1", "EFI"])
-                run(parted + ["set", "1", "esp", "on"])
-                run(parted + ["set", "1", "boot", "on"])
-                run(parted + ["mkpart", "primary", "linux-swap", "512MiB", mem_str+"GiB"])  # TODO Добавить к swap "512MiB"
-                run(parted + ["mkpart", "primary", "btrfs", mem_str+"GiB", "100%"])
+                _run(parted + ["mklabel", "gpt"])
+                _run(parted + ["mkpart", "primary", "fat32", "1MiB", "512MiB"])
+                _run(parted + ["name", "1", "EFI"])
+                _run(parted + ["set", "1", "esp", "on"])
+                _run(parted + ["set", "1", "boot", "on"])
+                _run(parted + ["mkpart", "primary", "linux-swap", "512MiB", mem_str+"GiB"])  # TODO Добавить к swap "512MiB"
+                _run(parted + ["mkpart", "primary", "btrfs", mem_str+"GiB", "100%"])
 
                 mkfs_command = ["mkfs.fat", "-F", "32"]
                 uefi_partition = ["/dev/"+use_disk.get()+"1"]
-                run(mkfs_command + uefi_partition)
+                _run(mkfs_command + uefi_partition)
                 uefi_mount = ["mount", "/dev/"+use_disk.get()+"1", root_mount_path+"/boot/efi"]
-                run(uefi_mount)
+                _run(uefi_mount)
 
-                run(["mkswap", "/dev/"+use_disk.get()+"2"])
+                _run(["mkswap", "/dev/"+use_disk.get()+"2"])
                 mkfs_command = ["mkfs.btrfs", "-f"]
                 root_partition = ["/dev/"+use_disk.get()+"3"]
-                run(mkfs_command + root_partition)
+                _run(mkfs_command + root_partition)
 
-                run(["swapon", "/dev/"+use_disk.get()+"2"])
-                run(["mount", "/dev/"+use_disk.get()+"3", root_mount_path])
+                _run(["swapon", "/dev/"+use_disk.get()+"2"])
+                _run(["mount", "/dev/"+use_disk.get()+"3", root_mount_path])
             elif grub_var.get() == 3:       # None
-                run(parted + ["mklabel", "msdos"])
-                run(parted + ["mkpart", "primary", "linux-swap", "1MiB", mem_str+"GiB"])
-                run(parted + ["mkpart", "primary", "btrfs", mem_str+"GiB", "100%"])
+                _run(parted + ["mklabel", "msdos"])
+                _run(parted + ["mkpart", "primary", "linux-swap", "1MiB", mem_str+"GiB"])
+                _run(parted + ["mkpart", "primary", "btrfs", mem_str+"GiB", "100%"])
 
-                run(["mkswap", "/dev/"+use_disk.get()+"1"])
+                _run(["mkswap", "/dev/"+use_disk.get()+"1"])
                 mkfs_command = ["mkfs.btrfs", "-f"]
                 root_partition = ["/dev/"+use_disk.get()+"2"]
-                run(mkfs_command + root_partition)
+                _run(mkfs_command + root_partition)
 
-                run(["swapon", "/dev/"+use_disk.get()+"1"])
-                run(["mount", "/dev/"+use_disk.get()+"2", root_mount_path])     
+                _run(["swapon", "/dev/"+use_disk.get()+"1"])
+                _run(["mount", "/dev/"+use_disk.get()+"2", root_mount_path])     
         else:
-            show("Необходимо выбрать диск.")
+            _show("Необходимо выбрать диск.")
     elif use_disk_or_partition.get() == 2:  # Использовать выбранный раздел.
         if select_partition.get():
             mkfs_command = ["mkfs.btrfs", "-f", select_partition.get()]
-            run(["mkfs.btrfs", "-f", select_partition.get()])
-            run(["mount", select_partition.get(), root_mount_path])
+            _run(["mkfs.btrfs", "-f", select_partition.get()])
+            _run(["mount", select_partition.get(), root_mount_path])
         else:
-            show("Необходимо выбрать раздел.")
+            _show("Необходимо выбрать раздел.")
 
 def basic_configure():
     # fstab   
-    show("Генерируем файл /etc/fstab")
+    _show("Генерируем файл /etc/fstab")
     genfstab_command = ["genfstab", "-U", root_mount_path]
     fstab = root_mount_path + "/etc/fstab"
     with open(fstab, "w") as file:
         Popen(genfstab_command, stdout=file, encoding='utf-8', text=True).wait()
-        show("В файл "+ fstab +" записываем:\n")
-        run(["cat", fstab]) # -> Показываем файл
+        _show("В файл "+ fstab +" записываем:\n")
+        _run(["cat", fstab]) # -> Показываем файл
 
     # Locale
     locale_gen = """
 ru_RU.UTF-8 UTF-8
 en_US.UTF-8 UTF-8
 """
-    write([locale_gen],root_mount_path + "/etc/locale.gen")
-    run(chroot + ["locale-gen"])
+    _write([locale_gen],root_mount_path + "/etc/locale.gen")
+    _run(chroot + ["locale-gen"])
 
-    show("Добавление: LANG=ru_RU.UTF-8 -> /etc/locale.conf")
-    write(["LANG=ru_RU.UTF-8"],root_mount_path + "/etc/locale.conf")
+    _show("Добавление: LANG=ru_RU.UTF-8 -> /etc/locale.conf")
+    _write(["LANG=ru_RU.UTF-8"],root_mount_path + "/etc/locale.conf")
 
-    show("Добавление: KEYMAP=ru -> /etc/vconsole.conf")
-    show("Добавление: FONT=cyr-sun16 -> /etc/vconsole.conf")
+    _show("Добавление: KEYMAP=ru -> /etc/vconsole.conf")
+    _show("Добавление: FONT=cyr-sun16 -> /etc/vconsole.conf")
     vconsole_conf = """
 KEYMAP=ru
 FONT=cyr-sun16
 """
-    write([vconsole_conf],root_mount_path + "/etc/vconsole.conf")
+    _write([vconsole_conf],root_mount_path + "/etc/vconsole.conf")
 
     # Net
     hostname = entry_hostname.get()
-    show("Имя компьютера: "+ hostname +" -> /etc/hostname")
-    write([hostname],root_mount_path + "/etc/hostname")
+    _show("Имя компьютера: "+ hostname +" -> /etc/hostname")
+    _write([hostname],root_mount_path + "/etc/hostname")
 
     hosts = """
 127.0.0.1   localhost
 127.0.0.1   {hostname}.local {hostname}""".format(hostname=hostname)    # TODO Поменять ip
-    write([hosts],root_mount_path + "/etc/hosts")
+    _write([hosts],root_mount_path + "/etc/hosts")
 
     for dev in net_devs:        # Сетевые интерфейсы
         if net_devs[dev]["tk_var_DHCP"].get() == 1:
@@ -399,7 +402,7 @@ Name={dev}
 [Network]
 DHCP=yes
             """.format(dev=dev)
-            write([wired_network],root_mount_path + "/etc/systemd/network/20-wired.network")
+            _write([wired_network],root_mount_path + "/etc/systemd/network/20-wired.network")
         else:
             wired_network = """# Статический ip-адрес
 [Match]
@@ -410,30 +413,70 @@ Address={ip}
 Gateway={gw}
 DNS={dns}
             """.format(dev=dev, ip=net_devs[dev]["ent_ip"].get(), gw=net_devs[dev]["ent_gw"].get(), dns=net_devs[dev]["ent_dns"].get())
-            write([wired_network],root_mount_path + "/etc/systemd/network/20-wired.network")
-    run(chroot + ["systemctl", "enable", "systemd-networkd"])
-    run(chroot + ["systemctl", "enable", "systemd-resolved"])
+            _write([wired_network],root_mount_path + "/etc/systemd/network/20-wired.network")
+    _run(chroot + ["systemctl", "enable", "systemd-networkd"])
+    _run(chroot + ["systemctl", "enable", "systemd-resolved"])
 
-    write(["domain", domain],root_mount_path + "/etc/resolv.conf")
+    _write(["domain", domain],root_mount_path + "/etc/resolv.conf")
 
     # Time
-    run(chroot + ["ln", "-sf", "/usr/share/zoneinfo/"+ array_tz[combo_tz.get()][1], "/etc/localtime"])
-    run(chroot + ["hwclock", "--systohc"])
-    show("Часовой пояс: "+ combo_tz.get()+ " "+ array_tz[combo_tz.get()][0])
+    _run(chroot + ["ln", "-sf", "/usr/share/zoneinfo/"+ array_tz[combo_tz.get()][1], "/etc/localtime"])
+    _run(chroot + ["hwclock", "--systohc"])
+    _show("Часовой пояс: "+ combo_tz.get()+ " "+ array_tz[combo_tz.get()][0])
 
+    # Берём конфиг с iso для временного использования в pacman
+    _run(["cp", "/etc/pacman.conf", root_mount_path + "/root/pacman.conf"])
+
+# TODO Сборку и установку pamac нужно перенести в chroot новой системы.
 def install_pamac():        # Спасибо https://stackoverflow.com/questions/52693107/python-script-for-installing-aur-packages
     # args = ["pacman", "-S", "--noconfirm", "--needed"]
     pamac_deps = ["dbus-glib", "desktop-file-utils", "git", "json-glib", "libhandy", "libnotify", "libsoup", "polkit", "vte3", "appstream-glib", \
         "glib2", "gnutls", "asciidoc", "gettext", "gobject-introspection", "itstool", "libappindicator-gtk3", "meson", "ninja", "xorgproto", \
         "vala", "gtk3"]
-    run(chroot + pacman + ["--needed"] + pamac_deps)
+    _run(chroot + pacman + ["--needed"] + pamac_deps)
 
     clone_and_makepkg(package_name="archlinux-appstream-data-pamac")
     clone_and_makepkg(package_name="libpamac-aur")
     clone_and_makepkg(package_name="pamac-aur")
-    write([pamac_conf],root_mount_path + "/etc/pamac.conf")
+    _write([pamac_conf],root_mount_path + "/etc/pamac.conf")
 
 def clone_and_makepkg(package_name, aur_folder_path="/tmp/build/", uid=1000, gid=1000):
+    git_url = "https://aur.archlinux.org/" + package_name + ".git"
+    new_package_path = os.path.join(root_mount_path, aur_folder_path, package_name)
+
+    if not os.path.exists(root_mount_path + aur_folder_path):
+        os.mkdir(root_mount_path + aur_folder_path)
+        os.chmod(root_mount_path + aur_folder_path, 0o777)
+
+    _show("Загрузка " + git_url + " в " + new_package_path)
+    # line = "Загрузка " + git_url + " в " + new_package_path 
+    # txt_edit.insert(tk.END, line)
+    with open(log_install, "a") as flog:
+        Popen(["git", "clone", git_url, new_package_path], preexec_fn=demote(uid, gid), stdout=flog, stderr=STDOUT, encoding='utf-8', text=True).wait()
+        # os.chdir(new_package_path)
+        Popen(chroot + ["cd", aur_folder_path + package_name,  ";makepkg"], preexec_fn=demote(uid, gid), stdout=flog, stderr=STDOUT, encoding='utf-8', text=True).wait()
+
+    built_packages = glob(new_package_path + os.sep + "*.pkg.tar.zst")
+    for package in built_packages:
+        _show("Установка пакета {}".format(package))
+
+    # args = ["pacman", "-U", "--noconfirm", "--root", root_mount_path, "--dbpath", root_mount_path+"/var/lib/pacman"]
+    # _run(args + built_packages)
+    _run(chroot + pacman + built_packages)
+
+def install_pamac_old():        # Спасибо https://stackoverflow.com/questions/52693107/python-script-for-installing-aur-packages
+    # args = ["pacman", "-S", "--noconfirm", "--needed"]
+    pamac_deps = ["dbus-glib", "desktop-file-utils", "git", "json-glib", "libhandy", "libnotify", "libsoup", "polkit", "vte3", "appstream-glib", \
+        "glib2", "gnutls", "asciidoc", "gettext", "gobject-introspection", "itstool", "libappindicator-gtk3", "meson", "ninja", "xorgproto", \
+        "vala", "gtk3"]
+    _run(chroot + pacman + ["--needed"] + pamac_deps)
+
+    clone_and_makepkg(package_name="archlinux-appstream-data-pamac")
+    clone_and_makepkg(package_name="libpamac-aur")
+    clone_and_makepkg(package_name="pamac-aur")
+    _write([pamac_conf],root_mount_path + "/etc/pamac.conf")
+
+def clone_and_makepkg_old(package_name, aur_folder_path="/tmp/build/", uid=1000, gid=1000):
     git_url = "https://aur.archlinux.org/" + package_name + ".git"
     new_package_path = os.path.join(aur_folder_path, package_name)
 
@@ -450,10 +493,10 @@ def clone_and_makepkg(package_name, aur_folder_path="/tmp/build/", uid=1000, gid
 
     built_packages = glob(new_package_path + os.sep + "*.pkg.tar.zst")
     for package in built_packages:
-        show("Установка пакета {}".format(package))
+        _show("Установка пакета {}".format(package))
 
     args = ["pacman", "-U", "--noconfirm", "--root", root_mount_path, "--dbpath", root_mount_path+"/var/lib/pacman"]
-    run(args + built_packages)
+    _run(args + built_packages)
 
 def demote(user_uid, user_gid):
     def apply_demotion():
@@ -461,24 +504,24 @@ def demote(user_uid, user_gid):
         os.setuid(user_uid)
     return apply_demotion
 
-def run(exec_command):      # Выполняем команду с аргументами
+def _run(exec_command):      # Выполняем команду с аргументами
     with open(log_install, "a") as flog:
         Popen(exec_command, stdout=flog, stderr=STDOUT, encoding='utf-8', text=True).wait()
 
-def show(line):             # Печатаем строку в интерфейс программы
+def _show(line):             # Печатаем строку в интерфейс программы
     txt_edit.insert(tk.END, _(line)+"\n")
 
-def write(text, outfile="/tmp/archi"):   # Пишем в файл: сначала файла перезаписывая то что там было
+def _write(text, outfile="/tmp/archi"):   # Пишем в файл: сначала файла перезаписывая то что там было
     with open(outfile, "w") as file:
         Popen(["echo"]+ text, stdout=file, encoding='utf-8', text=True).wait()
-    show("В файл "+ outfile +" записываем:\n")
-    run(["cat", outfile]) # -> Показываем файл
+    _show("В файл "+ outfile +" записываем:\n")
+    _run(["cat", outfile]) # -> Показываем файл
 
-def write_end(text, outfile="/tmp/archi"):   # Пишем в файл: дописываем в конец файла
+def _write_end(text, outfile="/tmp/archi"):   # Пишем в файл: дописываем в конец файла
     with open(outfile, "a") as file:
         Popen(["echo"]+ text, stdout=file, encoding='utf-8', text=True).wait()
-    show("В файл "+ outfile +" записываем:\n")
-    run(["cat", outfile]) # -> Показываем файл
+    _show("В файл "+ outfile +" записываем:\n")
+    _run(["cat", outfile]) # -> Показываем файл
 
 def cryptPassword(password, algo=None):         # Спасибо https://programtalk.com/python-examples/crypt.METHOD_MD5/
     salts = {'md5': crypt.METHOD_MD5,
@@ -514,7 +557,7 @@ def disk():                     # Спасибо https://codereview.stackexchang
     return disk   
 
 def custom_command():
-    show(DESCRIPTION)
+    _show(DESCRIPTION)
 
 def run_install():      # Начало процесса установки.
     # thrd = Thread(target=custom_command, daemon=True)
@@ -571,7 +614,7 @@ def show_partitions():
             row += 1
 
 def gparted():
-    run(["gparted"])
+    _run(["gparted"])
 
 def guide_online():
     Popen(["firefox", install_guide_online], encoding='utf-8', text=True)
