@@ -42,6 +42,7 @@ xfce4       = ["xfce4", "xfce4-clipman-plugin", "xfce4-pulseaudio-plugin", "xfce
     "file-roller", "accountsservice", "tilda", "gnome-disk-utility"]
 utils       = ["openssh", "avahi", "nss-mdns", "python-dbus", "sudo", "git", "mc", "cups", "samba", "zsh", "zsh-completions", "grc", "mpg123", "keepassxc", "mpv", \
     "perl-locale-gettext", "pulseaudio", "pulseaudio-zeroconf", "pavucontrol"]
+pamac       = ["pamac-aur"]
 utils_aur   = ["archlinux-appstream-data-pamac", "pamac-zsh-completions", "yandex-disk-indicator", "man-pages-ru"]
 fonts       = ["ttf-paratype", "otf-russkopis", "ttf-croscore", "ttf-dejavu", "ttf-ubuntu-font-family", "ttf-inconsolata", "ttf-liberation", "ttf-droid"]
 brows       = ["firefox", "chromium", "yandex-browser-beta", "brave-bin", "discord", "transmission-cli", "transmission-gtk", "adguardhome-bin"]
@@ -216,7 +217,10 @@ def install_arch():
     _run(pacstrap + [root_mount_path] + base_sys)    # Установка базовой системы
     basic_configure()                               # Конфигурирование базовой системы
 
-    args = ["useradd", "--create-home", "--shell", "/bin/zsh", "--password", cryptPassword(user_pass,"md5"), add_user]    # Добавляем пользователя
+    # Берём конфиг с iso для установки
+    _run(["cp", "/etc/pacman.conf", root_mount_path + "/root/pacman.conf"])
+
+    args = ["useradd", "--create-home", "--password", cryptPassword(user_pass,"md5"), add_user]    # Добавляем пользователя
     _run(chroot + args)
     args = ["usermod", "--password", cryptPassword(root_pass,"md5"), "root"]    # Меняем пароль для Root`а
     _run(chroot + args)
@@ -259,6 +263,8 @@ def install_arch():
     _run(chroot + pacman + utils)
     usermod = ["usermod", "--shell", "/bin/zsh", "root"]    # Меняем шелл для Root`а
     _run(chroot + usermod)
+    usermod = ["usermod", "--shell", "/bin/zsh", add_user]    # Меняем шелл для юзера.
+    _run(chroot + usermod)
     _write([add_user, "ALL=(ALL)", "ALL"], root_mount_path + "/etc/sudoers")  # Разрешаем юзеру sudo
 
     _write([nsswitch_conf], root_mount_path + "/etc/nsswitch.conf")      # Настраиваем Avahi
@@ -272,7 +278,8 @@ def install_arch():
     _write_end([default_pa], root_mount_path + "/etc/pulse/default.pa")      # Настраиваем звук по сети.
     fr_st_utils.configure(background=color3)
 
-    install_pamac()
+    # install_pamac()   # Функиця не работает с iso. Требуеться много заивсимостей. Работает на установленной системе.
+    _run(chroot + pacman + pamac)   # Поэтому ставим из пакета. см. /root/pacman.conf - подключен репозиторий archi.
     fr_st_pamac.configure(background=color3)
 
     _run(chroot + pamac + utils_aur)
@@ -423,9 +430,6 @@ DNS={dns}
     _run(chroot + ["ln", "-sf", "/usr/share/zoneinfo/"+ array_tz[combo_tz.get()][1], "/etc/localtime"])
     _run(chroot + ["hwclock", "--systohc"])
     _show("Часовой пояс: "+ combo_tz.get()+ " "+ array_tz[combo_tz.get()][0])
-
-    # Берём конфиг с iso для временного использования в pacman
-    _run(["cp", "/etc/pacman.conf", root_mount_path + "/root/pacman.conf"])
 
 # TODO Сборку и установку pamac нужно перенести в chroot новой системы.
 def install_pamac():        # Спасибо https://stackoverflow.com/questions/52693107/python-script-for-installing-aur-packages
