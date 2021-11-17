@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Установка Arch Linux
+Comment=Установка Arch Linux на этот компьютер.
+Exec=sudo python /home/archi/Desktop/archi.py
+Icon=archlinux-logo
+Path=Desktop
+Terminal=false
+StartupNotify=false

@@ -33,7 +33,7 @@ gnu-netcat
 gpart
 gpm
 gptfdisk
-grml-zsh-config
+#grml-zsh-config
 hdparm
 intel-ucode
 ipw2100-fw
@@ -118,6 +118,7 @@ xl2tpd
 zsh
 
 # --- Дополнительные пакеты ---
+
 # Пакеты необходимые для установщика
 python
 tk
@@ -168,11 +169,14 @@ tilda
 plank
 polkit
 gnome-disk-utility
+pulseaudio
+pavucontrol
 
 # Полезные утилиты
-pulseaudio
+base-devel
+arch-wiki-docs
+gparted
 pulseaudio-zeroconf
-pavucontrol
 audacious
 zsh-completions
 grc
@@ -184,11 +188,9 @@ git
 kdeconnect
 alacarte
 htop
-base-devel
-wget
 lsof
-arch-wiki-docs
-gparted
+strace
+wget
 firefox
 firefox-i18n-ru
 chromium
@@ -196,6 +198,7 @@ discord
 hexchat
 deluge
 deluge-gtk
+teamspeak3
 
 
 # Шрифты
@@ -207,22 +210,23 @@ ttf-inconsolata
 
 
 # wine
-wine
-wine-mono
-wine-gecko
+#wine
+#wine-mono
+#wine-gecko
 
 
 # kodi
-kodi
-kodi-platform
+#kodi
+#kodi-platform
 
 
 # Пакеты из дополнительного репизитория. Для их включения в iso включите репозиторий [archi] в файле pacman.conf из этой директории.
 oh-my-zsh-git
-badwolf
 adguardhome-bin
 assistant
 sublime-text-4
 rpi-imager
+badwolf
+#pamac
 #---ungoogled-chromium		# В процессе
 #---yandex-browser-beta		# В процессе

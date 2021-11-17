@@ -2,9 +2,13 @@
 
 Данный репозиторий содержит готовый профиль для сборки iso образа загрузочного диска Arch linux с пред настроенным русским языком.
 
-![image](https://raw.githubusercontent.com/ksandronline/archi/main/screenshot-0.png)
+![image](https://raw.githubusercontent.com/ksandronline/archi/main/screenshots/screen-1.png)
 
-![image](https://raw.githubusercontent.com/ksandronline/archi/main/screenshot-1.png)
+![image](https://raw.githubusercontent.com/ksandronline/archi/main/screenshots/screen-2.png)
+
+![image](https://raw.githubusercontent.com/ksandronline/archi/main/screenshots/screen-3.png)
+
+![image](https://raw.githubusercontent.com/ksandronline/archi/main/screenshots/screen-4.png)
 
 Ниже приведён краткий список команд необходимых для создания своего live диска.
 
