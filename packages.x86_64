@@ -48,7 +48,7 @@ lftp
 libfido2
 libusb-compat
 linux
-linux-atm
+#linux-atm
 linux-firmware
 livecd-sounds
 lsscsi
@@ -208,6 +208,12 @@ ttf-liberation
 ttf-dejavu
 ttf-inconsolata
 
+
+# Антивирусы
+clamav
+clamtk
+rkhunter
+unhide
 
 # wine
 #wine

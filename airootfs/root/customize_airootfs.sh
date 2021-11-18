@@ -23,7 +23,16 @@ ln -sfv /usr/share/doc/arch-wiki/html/ru "/root/Desktop/Оффициальное
 echo "Настройка home archi"
 ln -sfv /home/archi/Downloads /home/archi/Загрузки
 ln -sfv /usr/share/doc/arch-wiki/html/ru "/home/archi/Desktop/Оффициальное WiKi локальная версия"
+chmod +x -v /home/archi/Desktop/*.desktop
 
+echo """Приветствую.
+
+Я создаю этот проект для удобства использования системы Arch linux.
+Исходные файлы находятся в открытом доступе и доступны в репозитории.
+Моей целью является создание завершённых образов дисков и простой
+системы для их создания.
+
+С уважением ксандр.""" > "/home/archi/Desktop/Обращение к пользователю.txt"
 echo "################################"
 echo " # customize_airootfs.sh Done #" 
 echo "################################"

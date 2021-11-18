@@ -1,17 +1,29 @@
 [xfdesktop-version-4.10.3+-rcfile_format]
 4.10.3+=true
 
-[/home/archi/Desktop/doc.desktop]
-row=1
-col=2
+[/home/archi/Desktop/assistant.desktop]
+row=0
+col=3
+
+[/home/archi/Desktop/clamtk.desktop]
+row=3
+col=3
 
 [/home/archi/Desktop/radio.m3u]
 row=0
 col=17
 
+[/home/archi/Desktop/doc.desktop]
+row=1
+col=2
+
 [/home/archi/Desktop/AdGuardHome.desktop]
 row=0
 col=2
+
+[/home/archi/Desktop/install.desktop]
+row=2
+col=3
 
 [/home/archi/Desktop/archi.py]
 row=2
@@ -21,13 +33,9 @@ col=2
 row=1
 col=3
 
-[/home/archi/Desktop/install.desktop]
-row=2
-col=3
-
-[/home/archi/Desktop/assistant.desktop]
-row=0
-col=3
+[/home/archi/Desktop/rkhunter.desktop]
+row=3
+col=2
 
 [/home/archi]
 row=0

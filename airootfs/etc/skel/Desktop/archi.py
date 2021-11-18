@@ -1,12 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # DESCRIPTION = _("archi - script for install archlinux.")
-DESCRIPTION = "archi.py - скриптовая программа установки archlinux."
+DESCRIPTION = "archi.py - скриптовая программа установки Archlinux."
 CONTACT     = "ru@ksandr.online"
 AUTOR       = "ksandr"
 STATUS      = "pre.alfa"
-VERSION     = 20211116
-BUILD       = 1
+VERSION     = "20211118"
+BUILD       = "1"
 HOME_URL    = "http://archi.ksandr.online"
 
 
@@ -41,12 +41,12 @@ xfce4       = ["xfce4", "xfce4-clipman-plugin", "xfce4-pulseaudio-plugin", "xfce
     "ristretto", "arc-icon-theme", "arc-gtk-theme", "xdg-utils", "gvfs", "nfs-utils", "ntfs-3g", "sshfs", "unrar", "unzip", \
     "file-roller", "accountsservice", "tilda", "gnome-disk-utility"]
 utils       = ["openssh", "avahi", "nss-mdns", "python-dbus", "sudo", "git", "mc", "cups", "samba", "zsh", "zsh-completions", "grc", "mpg123", "keepassxc", "mpv", \
-    "perl-locale-gettext", "pulseaudio", "pulseaudio-zeroconf", "pavucontrol"]
+    "perl-locale-gettext", "pulseaudio", "pulseaudio-zeroconf", "pavucontrol", "discord", "deluge", "deluge-gtk", "teamspeak3"]
 pamac_aur   = ["pamac-aur"]
-utils_aur   = ["pamac-zsh-completions", "yandex-disk-indicator", "man-pages-ru"]
-fonts       = ["ttf-paratype", "otf-russkopis", "ttf-croscore", "ttf-dejavu", "ttf-ubuntu-font-family", "ttf-inconsolata", "ttf-liberation", "ttf-droid"]
-brows       = ["firefox", "chromium", "yandex-browser-beta", "brave-bin", "discord", "transmission-cli", "transmission-gtk", "adguardhome-bin"]
-custom      = ["rpi-imager", "conky-lua", "nodejs", "npm"]
+utils_aur   = ["ttf-paratype", "otf-russkopis", "pamac-zsh-completions", "yandex-disk-indicator", "man-pages-ru", "yandex-browser-beta", "brave-bin"]
+fonts       = ["ttf-croscore", "ttf-dejavu", "ttf-ubuntu-font-family", "ttf-inconsolata", "ttf-liberation", "ttf-droid"]
+brows       = ["firefox", "chromium"]
+custom      = ["rpi-imager", "adguardhome-bin", "oh-my-zsh-git", "assistant", "sublime-text-4"]
 
 root_mount_path     = "/mnt"
 chroot              = ["arch-chroot", root_mount_path]
@@ -55,7 +55,7 @@ domain              = "local"
 
 log_install = '/home/archi/Desktop/install.log'
 createlog = open(log_install, 'w')		# Создаём лог-файл
-createlog.write("Готов.")
+createlog.write("Статус: "+ STATUS +"\nВерсия:"+ VERSION)
 createlog.close()
 
 # Installation_guide.html
@@ -87,6 +87,25 @@ array_tz['MSK+07'] = ["Владивосток", "Asia/Vladivostok"]
 array_tz['MSK+08'] = ["Магадан Сахалин", "Asia/Magadan"]
 array_tz['MSK+09'] = ["Анадырь Камчатка", "Asia/Anadyr"]
 var_tz = list(array_tz)
+
+import time
+import os
+import glob
+import sys
+import crypt
+import tkinter as tk
+import tkinter.ttk as ttk
+from tkinter import *
+from tkinter.ttk import *
+from subprocess import Popen, PIPE, STDOUT
+from threading import Thread
+from os.path import basename, dirname
+from glob import glob
+
+net_devs = {}
+for dev in os.listdir("/sys/class/net/"):   # Спасибо https://stackoverflow.com/questions/3837069/how-to-get-network-interface-card-names-in-python
+    if dev != 'lo':
+        net_devs[dev] = {}
 
 # --------------------------------
 #  --- Конфигурационные файлы ---
@@ -189,50 +208,31 @@ avahi_ssh_service = """
 """
 
 default_pa = """
-load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1;192.168.0.0/24 auth-anonymous=1    # TODO Поменять IP на переменную
+load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1;{ip} auth-anonymous=1
 load-module module-zeroconf-publish
 load-module module-zeroconf-discover
-"""
-
-# -----------------
-# -----------------
-# -----------------
-
-import time
-import os
-import glob
-import sys
-import crypt
-import tkinter as tk
-import tkinter.ttk as ttk
-from tkinter import *
-from tkinter.ttk import *
-from subprocess import Popen, PIPE, STDOUT
-from threading import Thread
-from os.path import basename, dirname
-from glob import glob
-
-net_devs = {}
-for dev in os.listdir("/sys/class/net/"):   # Спасибо https://stackoverflow.com/questions/3837069/how-to-get-network-interface-card-names-in-python
-    if dev != 'lo':
-        net_devs[dev] = {}
+""".format(ip="192.168.0.1/24")
+# """.format(ip=net_devs[dev]["ent_ip"].get()) # TODO
 
 # --------------------------
 #  --- Основные функции ---
 # --------------------------
 
 def install_arch():
-    prepare_disk()                                  # Подготовка диска
+    prepare_disk()                          # Подготовка диска
     _run(pacstrap + [root_mount_path] + base_sys)    # Установка базовой системы
     basic_configure()                               # Конфигурирование базовой системы
 
     # Берём конфиг с iso для установки
     _run(["cp", "/etc/pacman.conf", root_mount_path + "/root/pacman.conf"])
-
+    # Копируем настройки пользователя по умолчанию
+    _run(["cp", "-aT", "/etc/skel/", root_mount_path + "/etc/skel/"])
+  
     args = ["useradd", "--create-home", "--password", cryptPassword(user_pass,"md5"), add_user]    # Добавляем пользователя
     _run(chroot + args)
     args = ["usermod", "--password", cryptPassword(root_pass,"md5"), "root"]    # Меняем пароль для Root`а
     _run(chroot + args)
+    _run(["cp", "/etc/skel/.zshrc", root_mount_path + "/root/.zshrc"])
     fr_st_base_sys.configure(background=color3) # Первый пункт выполнен
     
     # Ядро
@@ -273,7 +273,7 @@ def install_arch():
     _run(chroot + usermod)
     usermod = ["usermod", "--shell", "/bin/zsh", add_user]    # Меняем шелл для юзера.
     _run(chroot + usermod)
-    _write([add_user, "ALL=(ALL)", "ALL"], root_mount_path + "/etc/sudoers")  # Разрешаем юзеру sudo
+    _write([add_user, "ALL=(ALL)", "ALL"], root_mount_path + "/etc/sudoers.d/archi")  # Разрешаем юзеру sudo
 
     _write([nsswitch_conf], root_mount_path + "/etc/nsswitch.conf")      # Настраиваем Avahi
     _write([avahi_vnc_service], root_mount_path + "/etc/avahi/services/vnc.service")
@@ -286,23 +286,35 @@ def install_arch():
     _write_end([default_pa], root_mount_path + "/etc/pulse/default.pa")      # Настраиваем звук по сети.
     fr_st_utils.configure(background=color3)
 
-    # install_pamac()   # Функиця не работает с iso. Требуеться много заивсимостей. Работает на установленной системе.
-    _run(chroot + pacman + pamac_aur)   # Поэтому ставим из пакета. см. /root/pacman.conf - подключен репозиторий archi.
+    _run(chroot + pacman + pamac_aur)
     _write([pamac_conf],root_mount_path + "/etc/pamac.conf")
     fr_st_pamac.configure(background=color3)
 
-    _run(chroot + pamac + utils_aur)
-    fr_st_utils_aur.configure(background=color3)
+    _show("Пока из aur пакеты не собираются.")
+    #_run(chroot + pamac + utils_aur)
+    if TRUE:
+        fr_st_utils_aur.configure(background="RED")
+    else:
+        fr_st_utils_aur.configure(background=color3)
 
-    _run(chroot + pamac + fonts)
+    _run(chroot + pacman + fonts)
     fr_st_fonts.configure(background=color3)
 
-    _run(chroot + pamac + brows)
+    _run(chroot + pacman + brows)
     fr_st_brows.configure(background=color3)
 
-    _run(chroot + pamac + custom)
+    _run(chroot + pacman + custom)
+    _run(["cp", "-v", "/var/lib/adguardhome/AdGuardHome.yaml", root_mount_path + "/var/lib/adguardhome/AdGuardHome.yaml"])
+    _run(["mkdir", "-v", root_mount_path + "/etc/systemd/resolved.conf.d"])
+    _run(["cp", "-v", "/etc/systemd/resolved.conf.d/adguardhome.conf", root_mount_path + "/etc/systemd/resolved.conf.d/adguardhome.conf"])
+    _run(chroot + ["/var/lib/adguardhome/AdGuardHome", "-v", "--service", "install"])
     fr_st_custom.configure(background=color3)
-    _run(["cp", log_install, root_mount_path + "/root/install.log"])
+    
+    _run(["cp", "-v", log_install, root_mount_path + "/root/install.log"])
+    while _run(["umount", root_mount_path]) > 0:
+        time.sleep(1)
+    time.sleep(1)
+
     _show("Установка Arch linux завершена.")
     _show("Лог-файл установки скопирован в /root/install.log")
 
@@ -375,10 +387,12 @@ def basic_configure():
     # fstab   
     _show("Генерируем файл /etc/fstab")
     genfstab_command = ["genfstab", "-U", root_mount_path]
-    _run(genfstab_command)
+    while _run(genfstab_command) > 0:
+        time.sleep(1)
+    time.sleep(1)
     fstab = root_mount_path + "/etc/fstab"
     with open(fstab, "w") as file:
-        Popen(genfstab_command, stdout=file, encoding='utf-8', text=True)
+        Popen(genfstab_command, stdout=file, encoding='utf-8', text=True).wait()
 
     # Locale
     locale_gen = """
@@ -386,7 +400,9 @@ ru_RU.UTF-8 UTF-8
 en_US.UTF-8 UTF-8
     """
     _write([locale_gen],root_mount_path + "/etc/locale.gen")
-    _run(chroot + ["locale-gen"])
+    while _run(chroot + ["locale-gen"]) > 0:
+        time.sleep(1)
+    time.sleep(1)        
     _write(["LANG=ru_RU.UTF-8"],root_mount_path + "/etc/locale.conf")
     vconsole_conf = """
 KEYMAP=ru
@@ -396,7 +412,6 @@ FONT=cyr-sun16
 
     # Net
     hostname = entry_hostname.get()
-    _show("Имя компьютера: "+ hostname +" -> /etc/hostname")
     _write([hostname],root_mount_path + "/etc/hostname")
 
     hosts = """
@@ -430,105 +445,32 @@ DNS={dns}
     _run(chroot + ["systemctl", "enable", "systemd-networkd"])
     _run(chroot + ["systemctl", "enable", "systemd-resolved"])
 
-    _write(["domain="+domain],root_mount_path + "/etc/resolv.conf")
+    resolv_conf = """
+nameserver 127.0.0.1
+domain {domain}
+    """.format(domain=domain)
+    _write([resolv_conf],root_mount_path + "/etc/resolv.conf")
 
     # Time
-    _run(chroot + ["ln", "-sf", "/usr/share/zoneinfo/"+ array_tz[combo_tz.get()][1], "/etc/localtime"])
+    _run(chroot + ["ln", "-sfv", "/usr/share/zoneinfo/"+ array_tz[combo_tz.get()][1], "/etc/localtime"])
     _run(chroot + ["hwclock", "--systohc"])
     _show("Часовой пояс: "+ combo_tz.get()+ " "+ array_tz[combo_tz.get()][0])
 
-# TODO Сборку и установку pamac нужно перенести в chroot новой системы.
-def install_pamac():        # Спасибо https://stackoverflow.com/questions/52693107/python-script-for-installing-aur-packages
-    # args = ["pacman", "-S", "--noconfirm", "--needed"]
-    pamac_deps = ["dbus-glib", "desktop-file-utils", "git", "json-glib", "libhandy", "libnotify", "libsoup", "polkit", "vte3", "appstream-glib", \
-        "glib2", "gnutls", "asciidoc", "gettext", "gobject-introspection", "itstool", "libappindicator-gtk3", "meson", "ninja", "xorgproto", \
-        "vala", "gtk3"]
-    _run(chroot + pacman + ["--needed"] + pamac_deps)
-
-    clone_and_makepkg(package_name="archlinux-appstream-data-pamac")
-    clone_and_makepkg(package_name="libpamac-aur")
-    clone_and_makepkg(package_name="pamac-aur")
-    _write([pamac_conf],root_mount_path + "/etc/pamac.conf")
-
-def clone_and_makepkg(package_name, aur_folder_path="/tmp/build/", uid=1000, gid=1000):
-    git_url = "https://aur.archlinux.org/" + package_name + ".git"
-    new_package_path = os.path.join(root_mount_path, aur_folder_path, package_name)
-
-    if not os.path.exists(root_mount_path + aur_folder_path):
-        os.mkdir(root_mount_path + aur_folder_path)
-        os.chmod(root_mount_path + aur_folder_path, 0o777)
-
-    _show("Загрузка " + git_url + " в " + new_package_path)
-    # line = "Загрузка " + git_url + " в " + new_package_path 
-    # txt_edit.insert(tk.END, line)
-    with open(log_install, "a") as flog:
-        Popen(["git", "clone", git_url, new_package_path], preexec_fn=demote(uid, gid), stdout=flog, stderr=STDOUT, encoding='utf-8', text=True).wait()
-        # os.chdir(new_package_path)
-        Popen(chroot + ["cd", aur_folder_path + package_name,  ";makepkg"], preexec_fn=demote(uid, gid), stdout=flog, stderr=STDOUT, encoding='utf-8', text=True).wait()
-
-    built_packages = glob(new_package_path + os.sep + "*.pkg.tar.zst")
-    for package in built_packages:
-        _show("Установка пакета {}".format(package))
-
-    # args = ["pacman", "-U", "--noconfirm", "--root", root_mount_path, "--dbpath", root_mount_path+"/var/lib/pacman"]
-    # _run(args + built_packages)
-    _run(chroot + pacman + built_packages)
-
-def install_pamac_old():        # Спасибо https://stackoverflow.com/questions/52693107/python-script-for-installing-aur-packages
-    # args = ["pacman", "-S", "--noconfirm", "--needed"]
-    pamac_deps = ["dbus-glib", "desktop-file-utils", "git", "json-glib", "libhandy", "libnotify", "libsoup", "polkit", "vte3", "appstream-glib", \
-        "glib2", "gnutls", "asciidoc", "gettext", "gobject-introspection", "itstool", "libappindicator-gtk3", "meson", "ninja", "xorgproto", \
-        "vala", "gtk3"]
-    _run(chroot + pacman + ["--needed"] + pamac_deps)
-
-    clone_and_makepkg(package_name="archlinux-appstream-data-pamac")
-    clone_and_makepkg(package_name="libpamac-aur")
-    clone_and_makepkg(package_name="pamac-aur")
-    _write([pamac_conf],root_mount_path + "/etc/pamac.conf")
-
-def clone_and_makepkg_old(package_name, aur_folder_path="/tmp/build/", uid=1000, gid=1000):
-    git_url = "https://aur.archlinux.org/" + package_name + ".git"
-    new_package_path = os.path.join(aur_folder_path, package_name)
-
-    if not os.path.exists(aur_folder_path):
-        os.mkdir(aur_folder_path)
-        os.chmod(aur_folder_path, 0o777)
-
-    line = "Загрузка " + git_url + " в " + new_package_path 
-    txt_edit.insert(tk.END, line)
-    with open(log_install, "a") as flog:
-        Popen(["git", "clone", git_url, new_package_path], preexec_fn=demote(uid, gid), stdout=flog, stderr=STDOUT, encoding='utf-8', text=True).wait()
-        os.chdir(new_package_path)
-        Popen("makepkg", preexec_fn=demote(uid, gid), stdout=flog, stderr=STDOUT, encoding='utf-8', text=True).wait()
-
-    built_packages = glob(new_package_path + os.sep + "*.pkg.tar.zst")
-    for package in built_packages:
-        _show("Установка пакета {}".format(package))
-
-    args = ["pacman", "-U", "--noconfirm", "--root", root_mount_path, "--dbpath", root_mount_path+"/var/lib/pacman"]
-    _run(args + built_packages)
-
-def demote(user_uid, user_gid):
-    def apply_demotion():
-        os.setgid(user_gid)
-        os.setuid(user_uid)
-    return apply_demotion
-
 def _run(exec_command):      # Выполняем команду с аргументами
     with open(log_install, "a") as flog:
-        Popen(exec_command, stdout=flog, stderr=STDOUT, encoding='utf-8', text=True)
+        return Popen(exec_command, stdout=flog, stderr=STDOUT, encoding='utf-8', text=True).wait()
 
 def _show(line):             # Печатаем строку в интерфейс программы
-    txt_edit.insert(tk.END, _(line)+"\n")
+    txt_edit.insert(tk.END, ":: "+_(line)+"\n")
 
 def _write(text, outfile="/tmp/archi"):   # Пишем в файл: сначала файла перезаписывая то что там было
     with open(outfile, "w") as file:
-        Popen(["echo"]+ text, stdout=file, encoding='utf-8', text=True)
+        Popen(["echo"]+ text, stdout=file, encoding='utf-8', text=True).wait()
     _show("В файл "+ outfile +" записываем:\n" + text[0])
 
 def _write_end(text, outfile="/tmp/archi"):   # Пишем в файл: дописываем в конец файла
     with open(outfile, "a") as file:
-        Popen(["echo"]+ text, stdout=file, encoding='utf-8', text=True)
+        Popen(["echo"]+ text, stdout=file, encoding='utf-8', text=True).wait()
     _show("В файл "+ outfile +" записываем:\n" + text[0])
 
 def cryptPassword(password, algo=None):         # Спасибо https://programtalk.com/python-examples/crypt.METHOD_MD5/
@@ -566,10 +508,13 @@ def disk():                     # Спасибо https://codereview.stackexchang
 
 def custom_command():
     _show(DESCRIPTION)
+    if TRUE:
+        fr_st_utils_aur.configure(background="RED")
+    else:
+        fr_st_utils_aur.configure(background=color3)
 
 def run_install():      # Начало процесса установки.
     # thrd = Thread(target=custom_command, daemon=True)
-    # thrd = Thread(target=install_pamac, daemon=True)
     thrd = Thread(target=install_arch, daemon=True)
     thrd.start()
 
@@ -591,6 +536,7 @@ def _(s):
     except KeyError:
         return s
 # DESCRIPTION = _("archi - script for install archlinux.")
+
 # -------------------------------
 #  --- Графический интерфейс ---
 # -------------------------------
@@ -842,9 +788,9 @@ lbl_base_sys    = ttk.Label(fr_buttons, text="Основная система")
 lbl_kernel      = ttk.Label(fr_buttons, text="Ядро и загрузчик")
 lbl_xorg        = ttk.Label(fr_buttons, text="Xorg сервер")
 lbl_xfce4       = ttk.Label(fr_buttons, text="Набор xfce4")
-lbl_utils       = ttk.Label(fr_buttons, text="Утилиты")
+lbl_utils       = ttk.Label(fr_buttons, text="Дополнения")
 lbl_pamac       = ttk.Label(fr_buttons, text="Установка pamac")
-lbl_utils_aur   = ttk.Label(fr_buttons, text="Утилиты из AUR")
+lbl_utils_aur   = ttk.Label(fr_buttons, text="Дополнения из AUR")
 lbl_fonts       = ttk.Label(fr_buttons, text="Шрифты")
 lbl_brows       = ttk.Label(fr_buttons, text="Браузеры")
 lbl_custom      = ttk.Label(fr_buttons, text="Бонусы")
@@ -897,4 +843,3 @@ thrd_txt.start()
 
 clock.after_idle(tick) 
 window.mainloop()
-
