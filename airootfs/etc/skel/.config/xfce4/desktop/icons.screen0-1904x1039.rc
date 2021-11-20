@@ -5,6 +5,10 @@
 row=0
 col=3
 
+[/home/archi/Desktop/AdGuardHome.desktop]
+row=0
+col=2
+
 [/home/archi/Desktop/clamtk.desktop]
 row=3
 col=3
@@ -17,13 +21,13 @@ col=17
 row=1
 col=2
 
-[/home/archi/Desktop/AdGuardHome.desktop]
-row=0
-col=2
+[/home/archi/Desktop/Обращение к пользователю.txt]
+row=1
+col=5
 
-[/home/archi/Desktop/install.desktop]
-row=2
-col=3
+[/home/archi/Desktop/Рекомендации.md]
+row=1
+col=6
 
 [/home/archi/Desktop/archi.py]
 row=2
@@ -33,9 +37,17 @@ col=2
 row=1
 col=3
 
+[/home/archi/Desktop/install.desktop]
+row=2
+col=3
+
 [/home/archi/Desktop/rkhunter.desktop]
 row=3
 col=2
+
+[/home/archi/Desktop/install.log]
+row=4
+col=0
 
 [/home/archi]
 row=0

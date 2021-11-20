@@ -186,7 +186,7 @@ perl-locale-gettext
 keepassxc
 git
 kdeconnect
-alacarte
+#alacarte
 htop
 lsof
 strace

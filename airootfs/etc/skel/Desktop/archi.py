@@ -1,34 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# DESCRIPTION = _("archi - script for install archlinux.")
 DESCRIPTION = "archi.py - скриптовая программа установки Archlinux."
 CONTACT     = "ru@ksandr.online"
 AUTOR       = "ksandr"
 STATUS      = "pre.alfa"
-VERSION     = "20211118"
+VERSION     = "20211120"
 BUILD       = "1"
 HOME_URL    = "http://archi.ksandr.online"
-
-
-# --- TODO ---
-
-# GRUB - UEFI and fdisk for UEFI
-# Проверка режима загрузки ls /sys/firmware/efi/efivars
-# Создать интерфейс для указания логина и пароля, а также для пароля root (сделать 3 фрем в 3 колонку)
-# Показать все настройки перед установкой
-# Заблокироовать вторую вкладку на время процесса установки.
-# Отобразить размеры дисков и разделов
-# Для отображения сетевых интерфейсов создать фрейм и добавлять новые интерфейсы горизонатльно в колонки.
-# Определять bluetooth если есть устанавливать группу bluetooth
-# ?? Добавить локализацию ?? LANG = os.environ.get('LANG') print(LANG)
-    # todo для версии 2: Пересоздать заново весь графический интерфейс. 
 
 # -----------------
 # --- Настройки ---
 # -----------------
-add_user    = "archi"
-user_pass   = "archi"
-root_pass   = "archi" # !!! !НЕ! ЗАБУДЬ ПОМЕНЯТЬ ПАРОЛЬ !!!
+add_user    = "archi"   # В этой строчке можно указать вашше имя пользователя
+user_pass   = "archi"   # В этой строчке укажите вваш новый пароль в новой системе.
+root_pass   = "archi"   # !!! !НЕ! ЗАБУДЬ ПОМЕНЯТЬ ПАРОЛЬ !!! Пароль для пользователя root в новой системе. Не одинаковые пароли.
 
 # Списки пакетов
 base_sys    = ["base", "base-devel", "btrfs-progs", "vim", "wget"]
@@ -39,23 +24,26 @@ linux_zen   = ["linux-zen", "linux-zen-headers"]
 xorg        = ["xorg-server", "lightdm", "lightdm-gtk-greeter", "xf86-video-amdgpu", "xf86-video-ati", "xf86-video-intel", "xf86-video-nouveau", "tigervnc"]
 xfce4       = ["xfce4", "xfce4-clipman-plugin", "xfce4-pulseaudio-plugin", "xfce4-xkb-plugin", "xfce4-screenshooter", "xfce4-taskmanager", \
     "ristretto", "arc-icon-theme", "arc-gtk-theme", "xdg-utils", "gvfs", "nfs-utils", "ntfs-3g", "sshfs", "unrar", "unzip", \
-    "file-roller", "accountsservice", "tilda", "gnome-disk-utility"]
+    "file-roller", "accountsservice", "tilda", "gnome-disk-utility", "mousepad", "pulseaudio", "plank", "networkmanager", \
+    "network-manager-applet"]
 utils       = ["openssh", "avahi", "nss-mdns", "python-dbus", "sudo", "git", "mc", "cups", "samba", "zsh", "zsh-completions", "grc", "mpg123", "keepassxc", "mpv", \
-    "perl-locale-gettext", "pulseaudio", "pulseaudio-zeroconf", "pavucontrol", "discord", "deluge", "deluge-gtk", "teamspeak3"]
+    "perl-locale-gettext", "pulseaudio-zeroconf", "pavucontrol", "discord", "deluge", "deluge-gtk", "teamspeak3", "htop", \
+    "clamav", "clamtk", "rkhunter", "unhide", "audacious", "arch-wiki-docs", "tk"]
 pamac_aur   = ["pamac-aur"]
 utils_aur   = ["ttf-paratype", "otf-russkopis", "pamac-zsh-completions", "yandex-disk-indicator", "man-pages-ru", "yandex-browser-beta", "brave-bin"]
 fonts       = ["ttf-croscore", "ttf-dejavu", "ttf-ubuntu-font-family", "ttf-inconsolata", "ttf-liberation", "ttf-droid"]
-brows       = ["firefox", "chromium"]
+brows       = ["firefox", "firefox-i18n-ru", "chromium"]
 custom      = ["rpi-imager", "adguardhome-bin", "oh-my-zsh-git", "assistant", "sublime-text-4"]
 
 root_mount_path     = "/mnt"
 chroot              = ["arch-chroot", root_mount_path]
-fs_type             = "mkfs.btrfs"  # TODO по по умолчанию используеться btrfs
+#fs_type             = "mkfs.btrfs"  # TODO по по умолчанию используеться btrfs
 domain              = "local"
+net_manager_default = "networkmanager" # or "systemd"
 
 log_install = '/home/archi/Desktop/install.log'
 createlog = open(log_install, 'w')		# Создаём лог-файл
-createlog.write("Статус: "+ STATUS +"\nВерсия:"+ VERSION)
+createlog.write("Статус:"+ STATUS +"\nВерсия:"+ VERSION +"\n")
 createlog.close()
 
 # Installation_guide.html
@@ -224,36 +212,48 @@ def install_arch():
     basic_configure()                               # Конфигурирование базовой системы
 
     # Берём конфиг с iso для установки
-    _run(["cp", "/etc/pacman.conf", root_mount_path + "/root/pacman.conf"])
+    _run(["cp", "-v", "/etc/pacman.conf", root_mount_path + "/root/pacman.conf"])
     # Копируем настройки пользователя по умолчанию
     _run(["cp", "-aT", "/etc/skel/", root_mount_path + "/etc/skel/"])
   
     args = ["useradd", "--create-home", "--password", cryptPassword(user_pass,"md5"), add_user]    # Добавляем пользователя
     _run(chroot + args)
+    _run(chroot + ["chmod", "+x", "-v", "/home/"+ add_user +"/Desktop/*.desktop"])
+
     args = ["usermod", "--password", cryptPassword(root_pass,"md5"), "root"]    # Меняем пароль для Root`а
     _run(chroot + args)
-    _run(["cp", "/etc/skel/.zshrc", root_mount_path + "/root/.zshrc"])
+    _run(["cp", "-v", "/etc/skel/.zshrc", root_mount_path + "/root/.zshrc"])
     fr_st_base_sys.configure(background=color3) # Первый пункт выполнен
     
     # Ядро
     if kernel_var.get() == 1:   linux = linux_std
     elif kernel_var.get() == 2: linux = linux_lts
     elif kernel_var.get() == 3: linux = linux_zen
+    _run(["cp", "-v", "/etc/default/grub", root_mount_path + "/etc/default/grub"])
     _run(chroot + pacman + kernel + linux)  # Установка ядра и загрузчика
+    _run(["mkdir", "-v", root_mount_path + "/boot/grub", root_mount_path + "/boot/grub/themes"])
+    _run(["cp", "-aT", "/root/grub/themes/", root_mount_path + "/boot/grub/themes/"])
 
     # Загрузчик
-    grub_mkconfig = ["grub-mkconfig", "-o", "/boot/grub/grub.cfg"] 
     if grub_var.get() == 1:
-        _run(chroot + grub_mkconfig)
-        _run(chroot + ["grub-install", "/dev/"+use_disk.get()])  # BIOS
+        while _run(chroot + ["grub-install", "/dev/"+use_disk.get()]) > 0:  # BIOS
+            time.sleep(1)
+        time.sleep(1)
     elif grub_var.get() == 2:
-        _run(chroot + grub_mkconfig)
-        _run(chroot + ["grub-install"])  # UEFI
+        while _run(chroot + ["grub-install"]) > 0:  # UEFI
+            time.sleep(1)
+        time.sleep(1)
     elif grub_var.get() == 3:
         _show("Загрузчик не установлен.")
+    
+    grub_mkconfig = ["grub-mkconfig", "-o", "/boot/grub/grub.cfg"]
+    while _run(chroot + grub_mkconfig) > 0:
+        time.sleep(1)
+    time.sleep(1)
+
     fr_st_kernel.configure(background=color3)   # Второй пункт выполен
 
-    # Установка дополнений:
+# Xorg
     _run(chroot + pacman + xorg)
 
     _write([lightdm_conf],               root_mount_path + "/etc/lightdm/lightdm.conf")
@@ -265,14 +265,76 @@ def install_arch():
     _run(chroot + ["systemctl", "enable", "lightdm.service"])
     fr_st_xorg.configure(background=color3)     # Третий пункт
 
+# xfce4
     _run(chroot + pacman + xfce4)
+
+    for dev in net_devs:        # Сетевые интерфейсы
+        if net_devs[dev]["tk_var_DHCP"].get() == 1:
+            wired_network = """# DHCP
+[connection]
+id=LAN
+uuid=28ffe244-9a09-3c28-8bea-4ce030028109
+type=ethernet
+interface-name={dev}
+permissions=
+
+[ethernet]
+mac-address-blacklist=
+
+[ipv4]
+dns=127.0.0.1;
+dns-search={domain}
+ignore-auto-dns=true
+method=auto
+
+[ipv6]
+addr-gen-mode=stable-privacy
+dns-search=
+method=auto
+
+[proxy]
+""".format(dev=dev, domain=domain)
+            _write([wired_network],root_mount_path + "/etc/NetworkManager/system-connections/LAN.nmconnection")
+        else:
+            wired_network = """# Статический ip-адрес
+[connection]
+id=LAN
+uuid=28ffe244-9a09-3c28-8bea-4ce030028109
+type=ethernet
+interface-name={dev}
+permissions=
+
+[ethernet]
+mac-address-blacklist=
+
+[ipv4]
+address1={ip},{gw}
+dns={dns};
+dns-search={domain}
+ignore-auto-dns=true
+method=auto
+
+[ipv6]
+addr-gen-mode=stable-privacy
+dns-search=
+method=auto
+
+[proxy]
+""".format(dev=dev, ip=net_devs[dev]["ent_ip"].get(), gw=net_devs[dev]["ent_gw"].get(), dns=net_devs[dev]["ent_dns"].get(), domain=domain)
+            _write([wired_network],root_mount_path + "/etc/NetworkManager/system-connections/LAN.nmconnection")
+
+    _run(chroot + ["chmod", "-v", "600", "/etc/NetworkManager/system-connections/LAN.nmconnection"])
+    if net_manager_default == "networkmanager":
+        _run(chroot + ["systemctl", "enable", "NetworkManager.service"])
     fr_st_xfce4.configure(background=color3)
 
+# Дополнения
     _run(chroot + pacman + utils)
     usermod = ["usermod", "--shell", "/bin/zsh", "root"]    # Меняем шелл для Root`а
     _run(chroot + usermod)
     usermod = ["usermod", "--shell", "/bin/zsh", add_user]    # Меняем шелл для юзера.
     _run(chroot + usermod)
+    _run(chroot + ["ln", "-svf", "/usr/share/doc/arch-wiki/html/ru", "/home/"+ add_user +"/Desktop/Оффициальное WiKi локальная версия"])
     _write([add_user, "ALL=(ALL)", "ALL"], root_mount_path + "/etc/sudoers.d/archi")  # Разрешаем юзеру sudo
 
     _write([nsswitch_conf], root_mount_path + "/etc/nsswitch.conf")      # Настраиваем Avahi
@@ -286,6 +348,7 @@ def install_arch():
     _write_end([default_pa], root_mount_path + "/etc/pulse/default.pa")      # Настраиваем звук по сети.
     fr_st_utils.configure(background=color3)
 
+# Pamac
     _run(chroot + pacman + pamac_aur)
     _write([pamac_conf],root_mount_path + "/etc/pamac.conf")
     fr_st_pamac.configure(background=color3)
@@ -297,22 +360,24 @@ def install_arch():
     else:
         fr_st_utils_aur.configure(background=color3)
 
+# Шрифты
     _run(chroot + pacman + fonts)
     fr_st_fonts.configure(background=color3)
 
     _run(chroot + pacman + brows)
     fr_st_brows.configure(background=color3)
 
+# Бонусы
     _run(chroot + pacman + custom)
     _run(["cp", "-v", "/var/lib/adguardhome/AdGuardHome.yaml", root_mount_path + "/var/lib/adguardhome/AdGuardHome.yaml"])
     _run(["mkdir", "-v", root_mount_path + "/etc/systemd/resolved.conf.d"])
     _run(["cp", "-v", "/etc/systemd/resolved.conf.d/adguardhome.conf", root_mount_path + "/etc/systemd/resolved.conf.d/adguardhome.conf"])
     _run(chroot + ["/var/lib/adguardhome/AdGuardHome", "-v", "--service", "install"])
+
     fr_st_custom.configure(background=color3)
     
     _run(["cp", "-v", log_install, root_mount_path + "/root/install.log"])
-    while _run(["umount", root_mount_path]) > 0:
-        time.sleep(1)
+    _run(["umount", root_mount_path])
     time.sleep(1)
 
     _show("Установка Arch linux завершена.")
@@ -428,7 +493,7 @@ Name={dev}
 
 [Network]
 DHCP=yes
-            """.format(dev=dev)
+""".format(dev=dev)
             _write([wired_network],root_mount_path + "/etc/systemd/network/20-wired.network")
         else:
             wired_network = """# Статический ip-адрес
@@ -439,10 +504,11 @@ Name={dev}
 Address={ip}
 Gateway={gw}
 DNS={dns}
-            """.format(dev=dev, ip=net_devs[dev]["ent_ip"].get(), gw=net_devs[dev]["ent_gw"].get(), dns=net_devs[dev]["ent_dns"].get())
+""".format(dev=dev, ip=net_devs[dev]["ent_ip"].get(), gw=net_devs[dev]["ent_gw"].get(), dns=net_devs[dev]["ent_dns"].get())
             _write([wired_network],root_mount_path + "/etc/systemd/network/20-wired.network")
             
-    _run(chroot + ["systemctl", "enable", "systemd-networkd"])
+    if net_manager_default == "systemd":
+        _run(chroot + ["systemctl", "enable", "systemd-networkd"])
     _run(chroot + ["systemctl", "enable", "systemd-resolved"])
 
     resolv_conf = """
@@ -461,8 +527,8 @@ def _run(exec_command):      # Выполняем команду с аргуме
         return Popen(exec_command, stdout=flog, stderr=STDOUT, encoding='utf-8', text=True).wait()
 
 def _show(line):             # Печатаем строку в интерфейс программы
-    txt_edit.insert(tk.END, ":: "+_(line)+"\n")
-
+    _run(["echo", ":: "+ line +"\n"])
+    
 def _write(text, outfile="/tmp/archi"):   # Пишем в файл: сначала файла перезаписывая то что там было
     with open(outfile, "w") as file:
         Popen(["echo"]+ text, stdout=file, encoding='utf-8', text=True).wait()
@@ -571,13 +637,13 @@ def gparted():
     _run(["gparted"])
 
 def guide_online():
-    Popen(["firefox", install_guide_online], encoding='utf-8', text=True)
+    Popen(["sudo", "-u", "archi", "firefox", install_guide_online], encoding='utf-8', text=True)
     
 def guide_local():
-    Popen(["thunar", doc_local], encoding='utf-8', text=True)
+    Popen(["sudo", "-u", "archi", "thunar", doc_local], encoding='utf-8', text=True)
 
 def guide_gparted():
-    Popen(["firefox", gparted_guide_online], encoding='utf-8', text=True)
+    Popen(["sudo", "-u", "archi", "firefox", gparted_guide_online], encoding='utf-8', text=True)
 
 # Спасибо https://python-scripts.com/tkinter
 # Окно и его свойства

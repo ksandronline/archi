@@ -15,12 +15,11 @@ echo "Настройка home root"
 cp -aT  /etc/skel/ /root/
 chmod 700 -v /root
 chmod +x -v /root/Desktop/*.desktop
-rm -v /root/Desktop/archi.py
-ln -sfv /home/archi/Desktop/archi.py /root/Desktop/archi.py
 ln -sfv /root/Downloads /root/Загрузки
 ln -sfv /usr/share/doc/arch-wiki/html/ru "/root/Desktop/Оффициальное WiKi локальная версия"
 
 echo "Настройка home archi"
+cp -v /usr/share/applications/install.desktop /home/archi/Desktop/install.desktop
 ln -sfv /home/archi/Downloads /home/archi/Загрузки
 ln -sfv /usr/share/doc/arch-wiki/html/ru "/home/archi/Desktop/Оффициальное WiKi локальная версия"
 chmod +x -v /home/archi/Desktop/*.desktop
@@ -32,7 +31,7 @@ echo """Приветствую.
 Моей целью является создание завершённых образов дисков и простой
 системы для их создания.
 
-С уважением ксандр.""" > "/home/archi/Desktop/Обращение к пользователю.txt"
+С уважением ксандр.""" > "/home/archi/Desktop/Обращение к пользователю.md"
 echo "################################"
 echo " # customize_airootfs.sh Done #" 
 echo "################################"
