@@ -1,6 +1,6 @@
 ## archi - профиль для archiso
 
-Данный репозиторий содержит готовый профиль для сборки iso образа загрузочного диска Arch linux с пред настроенным русским языком.
+Данный репозиторий содержит готовый профиль для сборки iso образа загрузочного диска Arch linux на русском языке.
 
 ![image](https://raw.githubusercontent.com/ksandronline/archi/main/screenshots/screen-1.png)
 
